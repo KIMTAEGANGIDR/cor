@@ -1,50 +1,197 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+================================================================================
+SYNC IMPACT REPORT
+================================================================================
+Version Change: N/A (Initial) → 1.0.0
+Bump Rationale: Initial constitution creation for Indonesian legal document crawler
 
-## Core Principles
+Added Sections:
+- 핵심 원칙 I~VII (7개 원칙)
+- 기술 제약사항 섹션
+- 개발 워크플로우 섹션
+- 거버넌스 섹션
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+Modified Principles: N/A (신규)
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+Removed Sections: N/A (신규)
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+Templates Requiring Updates:
+- .specify/templates/plan-template.md: ✅ Constitution Check 섹션 호환 확인됨
+- .specify/templates/spec-template.md: ✅ 요구사항 구조 호환 확인됨
+- .specify/templates/tasks-template.md: ✅ 태스크 분류 호환 확인됨
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+Deferred Items: None
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+Follow-up TODOs: None
+================================================================================
+-->
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+# 인도네시아 법령 크롤러 (Peraturan.go.id Crawler) 헌법
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+## 핵심 원칙
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+### I. 데이터 무결성 우선 (Data Integrity First)
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+법령 데이터는 법적 효력을 가지는 공식 문서이므로, 데이터 무결성이 최우선이다.
 
-## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
+- 모든 다운로드 파일은 반드시 체크섬(SHA-256) 검증을 수행해야 한다
+- 메타데이터와 PDF 파일의 매핑은 반드시 원본 사이트의 관계를 정확히 반영해야 한다
+- 부분 다운로드나 손상된 파일은 반드시 재다운로드하거나 명확히 표시해야 한다
+- 원본 데이터의 인코딩(UTF-8)을 반드시 보존해야 한다
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+**근거**: 법령 데이터의 오류는 심각한 법적 해석 문제를 초래할 수 있다.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+### II. 책임 있는 크롤링 (Responsible Crawling)
+
+대상 서버의 안정성과 가용성을 존중하며 크롤링을 수행한다.
+
+- robots.txt 지시사항을 반드시 준수해야 한다
+- 요청 간 최소 1초 이상의 딜레이를 반드시 적용해야 한다
+- 동시 연결은 최대 2개로 제한해야 한다
+- User-Agent 헤더에 프로젝트 식별 정보와 연락처를 반드시 포함해야 한다
+- 서버 응답 코드 429(Too Many Requests) 또는 503 수신 시 지수 백오프를 반드시 적용해야 한다
+
+**근거**: 공공 서비스 서버에 과부하를 주는 것은 비윤리적이며, IP 차단의 원인이 된다.
+
+### III. 재개 가능한 수집 (Resumable Collection)
+
+크롤링 작업은 언제든지 중단하고 재개할 수 있어야 한다.
+
+- 모든 다운로드 진행 상황을 영구 저장소에 기록해야 한다
+- 이미 완료된 항목은 재다운로드하지 않아야 한다 (멱등성)
+- 실패한 항목은 별도 큐에 기록하여 재시도할 수 있어야 한다
+- 상태 파일은 원자적(atomic) 쓰기로 저장해야 한다
+
+**근거**: 61,000건 이상의 법령을 처리하는 작업은 장시간이 소요되며, 네트워크 오류나 시스템 중단이 발생할 수 있다.
+
+### IV. 구조화된 메타데이터 (Structured Metadata)
+
+수집된 메타데이터는 표준화된 형식으로 저장되어야 한다.
+
+- 메타데이터는 JSON 형식으로 저장해야 한다
+- 필수 필드: 법령번호, 연도, 법령유형, 제정일, 공포일, 제목, 상태, PDF_URL
+- 날짜는 반드시 ISO 8601 형식(YYYY-MM-DD)으로 저장해야 한다
+- 원본 인도네시아어 텍스트와 필드명은 별도로 보존해야 한다
+
+**근거**: 일관된 메타데이터 구조는 후속 분석 및 검색 기능 구현을 용이하게 한다.
+
+### V. 관측 가능성 (Observability)
+
+시스템의 동작 상태를 언제든지 파악할 수 있어야 한다.
+
+- 모든 HTTP 요청/응답은 타임스탬프와 함께 로깅해야 한다
+- 진행률은 실시간으로 확인 가능해야 한다 (처리 완료/전체/실패 건수)
+- 에러 발생 시 스택 트레이스와 관련 컨텍스트를 반드시 기록해야 한다
+- 로그 레벨(DEBUG, INFO, WARN, ERROR)을 반드시 구분해야 한다
+
+**근거**: 장시간 실행되는 크롤러의 문제를 조기에 발견하고 디버깅하기 위해 필수적이다.
+
+### VI. 단순성 (Simplicity)
+
+불필요한 복잡성을 피하고, 명확하고 직관적인 구조를 유지한다.
+
+- 단일 진입점(CLI)을 통해 모든 기능에 접근할 수 있어야 한다
+- 설정은 환경 변수 또는 단일 설정 파일로 관리해야 한다
+- 외부 의존성은 반드시 필요한 경우에만 추가해야 한다
+- 코드보다 표준 라이브러리를 우선해야 한다
+
+**근거**: 단순한 시스템은 유지보수가 용이하고 버그 발생 가능성이 낮다.
+
+### VII. 테스트 주도 (Test-Driven Development)
+
+핵심 기능은 테스트로 보호되어야 한다.
+
+- 파서(메타데이터 추출) 로직은 반드시 단위 테스트를 갖추어야 한다
+- 실제 HTTP 요청 없이도 테스트할 수 있도록 모킹을 지원해야 한다
+- 통합 테스트는 실제 사이트 대신 로컬 모의 서버를 사용해야 한다
+- CI 파이프라인에서 모든 테스트가 통과해야 머지가 허용된다
+
+**근거**: 법령 데이터 파싱 오류는 조용히 발생하여 나중에 발견되므로, 사전 검증이 필수적이다.
+
+## 기술 제약사항
+
+### 저장소 구조
+
+```
+data/
+├── metadata/           # JSON 메타데이터 파일
+│   ├── uu/             # 법률 (Undang-Undang)
+│   ├── pp/             # 정부령 (Peraturan Pemerintah)
+│   ├── perpres/        # 대통령령 (Peraturan Presiden)
+│   ├── permen/         # 부령 (Peraturan Menteri)
+│   ├── perda/          # 지방조례 (Peraturan Daerah)
+│   └── lainnya/        # 기타 규정
+├── pdfs/               # 다운로드된 PDF 파일
+├── state/              # 크롤러 상태 파일
+└── logs/               # 실행 로그
+```
+
+### 파일 명명 규칙
+
+- 메타데이터: `{법령유형}-{연도}-{번호}.json` (예: `uu-2024-84.json`)
+- PDF: 원본 파일명 유지 또는 `{법령유형}-{연도}-{번호}.pdf`
+- 로그: `crawler-{YYYY-MM-DD}.log`
+
+### 필수 의존성 제한
+
+- HTTP 클라이언트: 표준 라이브러리 우선, 필요시 requests/httpx 허용
+- HTML 파싱: BeautifulSoup 또는 lxml
+- JSON 처리: 표준 라이브러리
+- CLI: argparse (표준 라이브러리) 또는 click
+
+### 성능 기준
+
+- 단일 페이지 처리: 2초 이내 (네트워크 제외)
+- 메모리 사용량: 500MB 이하
+- 디스크 I/O: 순차 쓰기 우선, 불필요한 읽기 최소화
+
+## 개발 워크플로우
+
+### 코드 리뷰 요구사항
+
+- 모든 PR은 헌법의 핵심 원칙 준수 여부를 검증해야 한다
+- 데이터 무결성에 영향을 주는 변경은 반드시 테스트를 포함해야 한다
+- 새로운 외부 의존성 추가는 반드시 정당화되어야 한다
+
+### 품질 게이트
+
+1. **린팅**: 코드 스타일 검사 통과
+2. **타입 체크**: 정적 타입 검사 통과 (해당되는 경우)
+3. **단위 테스트**: 모든 테스트 통과
+4. **통합 테스트**: 모킹된 환경에서 E2E 테스트 통과
+
+### 커밋 메시지 형식
+
+```
+<type>(<scope>): <description>
+
+[optional body]
+
+[optional footer]
+```
+
+타입: feat, fix, docs, style, refactor, test, chore
+
+## 거버넌스
+
+### 헌법 우선
+
+이 헌법은 프로젝트의 모든 개발 관행에 우선한다. 헌법과 충돌하는 코드나 관행은 허용되지 않는다.
+
+### 수정 절차
+
+1. 수정 제안은 PR을 통해 제출한다
+2. 수정 내용에 대한 근거를 명확히 설명한다
+3. 기존 코드에 미치는 영향을 분석한다
+4. 버전 번호를 적절히 증가시킨다:
+   - MAJOR: 원칙 삭제 또는 근본적 재정의
+   - MINOR: 새로운 원칙 추가 또는 기존 원칙 확장
+   - PATCH: 문구 수정, 오타 교정, 명확화
+
+### 준수 검토
+
+- 모든 PR은 핵심 원칙 준수 여부를 체크리스트로 확인해야 한다
+- 헌법 위반이 발견되면 해당 코드는 수정되어야 한다
+- 원칙 준수가 불가능한 경우, 헌법 수정을 먼저 제안해야 한다
+
+**Version**: 1.0.0 | **Ratified**: 2025-12-18 | **Last Amended**: 2025-12-18
