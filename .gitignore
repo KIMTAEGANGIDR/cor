@@ -1,0 +1,86 @@
+# =============================================================================
+# Data directories (runtime, not versioned) - 약 96GB
+# =============================================================================
+data/
+*/data/
+peraturan/data/
+bpk/data/
+
+# PDF files (anywhere)
+*.pdf
+*.PDF
+
+# Database files
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Large output directories
+output/
+checkpoints/
+manual_review/
+test_output/
+test_data/
+headers/
+
+# Temporary files
+temp/
+tmp/
+*.tmp
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+.venv/
+.venv_paddle/
+venv/
+ENV/
+env/
+.env
+
+# IDE / Tools
+.idea/
+.vscode/
+.obsidian/
+.codex/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# Type checking
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Logs
+*.log
+logs/

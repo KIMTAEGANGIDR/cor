@@ -1,0 +1,103 @@
+# =============================================================================
+# OCR Pipeline - Docker Compose (로컬 개발용)
+# =============================================================================
+#
+# 사용법:
+#   빌드:    docker-compose build
+#   실행:    docker-compose run --rm ocr python -m ocr.pipeline --help
+#   테스트:  docker-compose run --rm ocr pytest
+#   쉘:      docker-compose run --rm ocr bash
+#
+# GPU 사용 (NVIDIA Docker 필요):
+#   docker-compose run --rm ocr-gpu python -m ocr.pipeline process
+# =============================================================================
+
+version: '3.8'
+
+services:
+  # CPU 모드 (로컬 개발/테스트)
+  ocr:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ilis-ocr:latest
+    container_name: ilis-ocr-dev
+
+    volumes:
+      # 소스 코드 마운트 (핫 리로드)
+      - .:/workspace/ocr
+      # 데이터 디렉토리
+      - ../../../peraturan/data/pdfs:/workspace/data/input:ro
+      - ./output:/workspace/data/output
+      - ./checkpoints:/workspace/data/checkpoints
+      - ./logs:/workspace/data/logs
+      - ./manual_review:/workspace/data/manual_review
+      # rclone 설정 (Google Drive 연결)
+      - ~/.config/rclone:/root/.config/rclone:ro
+
+    environment:
+      - PYTHONPATH=/workspace
+      - OCR_MODE=cpu
+      - LOG_LEVEL=INFO
+
+    # 인터랙티브 모드
+    stdin_open: true
+    tty: true
+
+    # 기본 명령
+    command: bash
+
+  # GPU 모드 (NVIDIA Docker 필요)
+  ocr-gpu:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ilis-ocr:latest
+    container_name: ilis-ocr-gpu
+
+    # GPU 설정
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+    volumes:
+      - .:/workspace/ocr
+      - ../../../peraturan/data/pdfs:/workspace/data/input:ro
+      - ./output:/workspace/data/output
+      - ./checkpoints:/workspace/data/checkpoints
+      - ./logs:/workspace/data/logs
+      - ./manual_review:/workspace/data/manual_review
+      - ~/.config/rclone:/root/.config/rclone:ro
+
+    environment:
+      - PYTHONPATH=/workspace
+      - OCR_MODE=gpu
+      - LOG_LEVEL=INFO
+      - CUDA_VISIBLE_DEVICES=0
+
+    stdin_open: true
+    tty: true
+    command: bash
+
+  # 테스트 전용
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ilis-ocr:latest
+
+    volumes:
+      - .:/workspace/ocr
+      - ./test_data:/workspace/data/input:ro
+      - ./test_output:/workspace/data/output
+
+    environment:
+      - PYTHONPATH=/workspace
+      - OCR_MODE=cpu
+      - LOG_LEVEL=DEBUG
+
+    command: pytest -v /workspace/ocr/tests/
