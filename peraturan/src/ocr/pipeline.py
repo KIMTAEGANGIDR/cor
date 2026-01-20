@@ -260,7 +260,12 @@ class CheckpointManager:
 
 class OCRPipeline:
     """
-    OCR 파이프라인 메인 클래스
+    OCR 파이프라인 메인 클래스 (하이브리드 v2)
+
+    전략:
+    - 텍스트 추출 시도 → 품질 검사
+    - 품질 >= 임계치: 텍스트 사용 (빠름)
+    - 품질 < 임계치: 이미지 → OCR (일관된 품질)
 
     사용법:
         pipeline = OCRPipeline(
@@ -271,6 +276,7 @@ class OCRPipeline:
     """
 
     MAX_RETRIES = 3  # 최대 재처리 횟수
+    QUALITY_THRESHOLD = 0.92  # 이 점수 이상이면 텍스트 사용, 미만이면 OCR
 
     def __init__(
         self,
@@ -484,48 +490,52 @@ class OCRPipeline:
         doc_id: str,
     ) -> PageResult:
         """
-        단일 페이지 처리
+        단일 페이지 처리 (하이브리드 v2)
 
-        Phase 1: 품질 스캔
-        Phase 3: 적응형 OCR
+        로직:
+        1. 텍스트 추출 시도
+        2. 품질 점수 계산
+        3. 점수 >= QUALITY_THRESHOLD: 텍스트 사용
+        4. 점수 < QUALITY_THRESHOLD: 이미지 → OCR
         """
         page = doc[page_num]
 
-        # 내장 텍스트 추출
+        # 1. 내장 텍스트 추출
         try:
             embedded_text = page.get_text("text")
         except Exception as e:
             embedded_text = ""
             logger.warning(f"텍스트 추출 실패: {doc_id} p.{page_num} - {e}")
 
-        # Phase 1: 품질 스캔
+        # 2. 품질 점수 계산
         quality = self.quality_scorer.score_text(embedded_text)
 
-        # Phase 3: 전략에 따른 처리
-        if quality.strategy == ProcessingStrategy.TEXT:
-            # 내장 텍스트 사용
+        # 3. 빈 페이지 처리 (텍스트 거의 없음)
+        if quality.strategy == ProcessingStrategy.SKIP:
             return PageResult(
                 page_num=page_num,
                 status=PageStatus.COMPLETED,
-                strategy=quality.strategy,
-                quality_score=quality.score,
-                text=embedded_text,
-                processed_at=datetime.now().isoformat(),
-            )
-
-        elif quality.strategy == ProcessingStrategy.SKIP:
-            # 빈 페이지 스킵
-            return PageResult(
-                page_num=page_num,
-                status=PageStatus.COMPLETED,
-                strategy=quality.strategy,
+                strategy=ProcessingStrategy.SKIP,
                 quality_score=quality.score,
                 text="",
                 processed_at=datetime.now().isoformat(),
             )
 
+        # 4. 하이브리드 v2 로직: 품질 기반 분기
+        if quality.score >= self.QUALITY_THRESHOLD:
+            # 고품질: 내장 텍스트 사용
+            logger.debug(f"텍스트 사용: {doc_id} p.{page_num} (품질: {quality.score:.3f})")
+            return PageResult(
+                page_num=page_num,
+                status=PageStatus.COMPLETED,
+                strategy=ProcessingStrategy.TEXT,
+                quality_score=quality.score,
+                text=embedded_text,
+                processed_at=datetime.now().isoformat(),
+            )
         else:
-            # OCR 필요 (HYBRID 또는 OCR)
+            # 저품질: 이미지 → OCR로 대체
+            logger.debug(f"OCR 전환: {doc_id} p.{page_num} (품질: {quality.score:.3f} < {self.QUALITY_THRESHOLD})")
             return self._ocr_page(doc, page_num, doc_id, quality, embedded_text)
 
     def _ocr_page(
@@ -536,98 +546,108 @@ class OCRPipeline:
         quality: QualityResult,
         embedded_text: str,
     ) -> PageResult:
-        """페이지 OCR 처리"""
+        """
+        페이지 OCR 처리 (하이브리드 v2)
+
+        품질 점수가 임계치 미만일 때 호출됨.
+        이미지로 변환 후 OCR 실행, 결과를 그대로 사용.
+        """
         page = doc[page_num]
 
-        # 페이지를 이미지로 변환
+        # 1. 페이지를 이미지로 변환
         try:
             pix = page.get_pixmap(dpi=300)
             img_data = pix.tobytes("png")
 
-            # PIL Image로 변환
             from PIL import Image
             import io
             img = Image.open(io.BytesIO(img_data))
 
         except Exception as e:
             logger.error(f"이미지 변환 실패: {doc_id} p.{page_num} - {e}")
-            return PageResult(
-                page_num=page_num,
-                status=PageStatus.FAILED,
-                strategy=quality.strategy,
-                quality_score=quality.score,
-                error_message=str(e),
-                processed_at=datetime.now().isoformat(),
-            )
-
-        # OCR 실행
-        ocr_result = self.ocr_engine.process_image(img)
-
-        # 완전 빈 페이지 감지: OCR도 빈약하면 SKIP 처리
-        # - 내장 텍스트 없음 (empty quality.strategy == OCR)
-        # - OCR 결과도 거의 없음 (< 10자)
-        # - 노이즈 방지를 위해 빈 텍스트로 처리
-        MIN_OCR_TEXT_LENGTH = 5
-        ocr_text_stripped = (ocr_result.text or "").strip()
-        if (quality.strategy == ProcessingStrategy.OCR and
-            not embedded_text.strip() and
-            len(ocr_text_stripped) < MIN_OCR_TEXT_LENGTH):
-            logger.debug(f"빈 페이지 감지: {doc_id} p.{page_num} (OCR: {len(ocr_text_stripped)}자)")
+            # 이미지 변환 실패시 내장 텍스트라도 사용 (fallback)
             return PageResult(
                 page_num=page_num,
                 status=PageStatus.COMPLETED,
-                strategy=ProcessingStrategy.SKIP,  # 빈 페이지로 처리
+                strategy=ProcessingStrategy.TEXT,
+                quality_score=quality.score,
+                text=embedded_text,
+                ocr_engine="fallback_embedded",
+                error_message=f"이미지 변환 실패, 내장 텍스트 사용: {e}",
+                processed_at=datetime.now().isoformat(),
+            )
+
+        # 2. OCR 실행
+        ocr_result = self.ocr_engine.process_image(img)
+        ocr_text = (ocr_result.text or "").strip()
+
+        # 3. OCR 결과 품질 확인
+        ocr_quality = self.quality_scorer.score_text(ocr_text)
+
+        # 4. 빈 페이지 감지 (내장 텍스트도 없고 OCR도 빈약)
+        MIN_OCR_TEXT_LENGTH = 5
+        if not embedded_text.strip() and len(ocr_text) < MIN_OCR_TEXT_LENGTH:
+            logger.debug(f"빈 페이지 감지: {doc_id} p.{page_num}")
+            return PageResult(
+                page_num=page_num,
+                status=PageStatus.COMPLETED,
+                strategy=ProcessingStrategy.SKIP,
                 quality_score=0.0,
                 text="",
                 processed_at=datetime.now().isoformat(),
             )
 
-        # HYBRID: 내장 텍스트와 비교
-        if quality.strategy == ProcessingStrategy.HYBRID:
-            # 품질 점수로 비교
-            embedded_quality = quality.score
-            ocr_quality = ocr_result.quality.score if ocr_result.quality else 0
+        # 5. OCR 결과 vs 내장 텍스트 비교 (안전장치)
+        # OCR이 확실히 나쁘면 (거의 빈 결과) 내장 텍스트 사용
+        if len(ocr_text) < MIN_OCR_TEXT_LENGTH and len(embedded_text.strip()) > 50:
+            logger.warning(f"OCR 실패, 내장 텍스트 사용: {doc_id} p.{page_num}")
+            return PageResult(
+                page_num=page_num,
+                status=PageStatus.COMPLETED,
+                strategy=ProcessingStrategy.TEXT,
+                quality_score=quality.score,
+                text=embedded_text,
+                ocr_engine="fallback_embedded",
+                processed_at=datetime.now().isoformat(),
+            )
 
-            if embedded_quality >= ocr_quality:
-                final_text = embedded_text
-                engine_used = "embedded"
-            else:
-                final_text = ocr_result.text
-                engine_used = ocr_result.engine.value
-        else:
-            final_text = ocr_result.text
-            engine_used = ocr_result.engine.value
+        # 6. OCR 결과 사용 (기본)
+        final_text = ocr_text
+        engine_used = ocr_result.engine.value if ocr_result.engine else "unknown"
 
-        # 수동 검토 필요 여부
-        if ocr_result.engine == OCREngine.MANUAL:
-            # 수동 검토 큐에 추가
+        # 7. OCR 품질도 낮으면 MANUAL_REVIEW
+        if ocr_result.engine == OCREngine.MANUAL or ocr_quality.score < 0.5:
             manual_path = self.output_dir / "manual_review" / f"{doc_id}_p{page_num}.json"
             with open(manual_path, 'w', encoding='utf-8') as f:
                 json.dump({
                     "doc_id": doc_id,
                     "page_num": page_num,
                     "embedded_text": embedded_text[:500],
-                    "ocr_text": ocr_result.text[:500],
-                    "quality_score": quality.score,
+                    "embedded_quality": quality.score,
+                    "ocr_text": ocr_text[:500],
+                    "ocr_quality": ocr_quality.score,
                     "ocr_confidence": ocr_result.confidence,
+                    "reason": "OCR 품질도 낮음" if ocr_quality.score < 0.5 else "OCR 엔진 MANUAL",
                 }, f, ensure_ascii=False, indent=2)
 
             return PageResult(
                 page_num=page_num,
                 status=PageStatus.MANUAL_REVIEW,
-                strategy=quality.strategy,
-                quality_score=quality.score,
+                strategy=ProcessingStrategy.OCR,
+                quality_score=ocr_quality.score,
                 text=final_text,
                 ocr_engine=engine_used,
                 ocr_confidence=ocr_result.confidence,
                 processed_at=datetime.now().isoformat(),
             )
 
+        # 8. 정상 완료
+        logger.debug(f"OCR 완료: {doc_id} p.{page_num} (품질: {ocr_quality.score:.3f})")
         return PageResult(
             page_num=page_num,
             status=PageStatus.COMPLETED,
-            strategy=quality.strategy,
-            quality_score=quality.score,
+            strategy=ProcessingStrategy.OCR,
+            quality_score=ocr_quality.score,
             text=final_text,
             ocr_engine=engine_used,
             ocr_confidence=ocr_result.confidence,
