@@ -241,24 +241,28 @@ def create_app():
     """Gradio 앱 생성"""
     analyzer = PatternAnalyzer()
 
-    with gr.Blocks(title="헤더 패턴 분석기") as app:
-        gr.Markdown("# 🔍 헤더 패턴 분석기")
-        gr.Markdown("클러스터별 헤더를 비교하고 **노이즈 패턴**을 발견합니다")
+    with gr.Blocks(title="헤더 패턴 분석기", theme=gr.themes.Soft()) as app:
+        gr.Markdown("# 🔍 OCR 패턴 분석기")
 
-        # 상태 저장
-        current_cluster = gr.State(None)
-        current_headers = gr.State([])
-        selected_header_id = gr.State(None)
+        with gr.Tabs():
+            # ========== 탭 1: 헤더 패턴 분석 ==========
+            with gr.TabItem("📝 헤더 패턴"):
+                gr.Markdown("클러스터별 헤더를 비교하고 **노이즈 패턴**을 발견합니다")
 
-        # ========== 상단: 클러스터 선택 ==========
-        with gr.Row():
-            cluster_dropdown = gr.Dropdown(
-                label="📁 클러스터 선택",
-                choices=[],
-                scale=3
-            )
-            refresh_btn = gr.Button("🔄", scale=1)
-            save_rule_btn = gr.Button("💾 규칙 저장", variant="primary", scale=1)
+                # 상태 저장
+                current_cluster = gr.State(None)
+                current_headers = gr.State([])
+                selected_header_id = gr.State(None)
+
+                # ========== 상단: 클러스터 선택 ==========
+                with gr.Row():
+                    cluster_dropdown = gr.Dropdown(
+                        label="📁 클러스터 선택",
+                        choices=[],
+                        scale=3
+                    )
+                    refresh_btn = gr.Button("🔄", scale=1)
+                    save_rule_btn = gr.Button("💾 규칙 저장", variant="primary", scale=1)
 
         # ========== 클러스터 통계 ==========
         cluster_stats = gr.Markdown("클러스터를 선택하세요")

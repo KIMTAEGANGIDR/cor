@@ -95,31 +95,57 @@ Python 3.11+: Follow standard conventions
 
 ## PaddleOCR 설정 가이드
 
-### 환경
-- PaddlePaddle GPU 3.0.0 (CUDA 11.8)
-- PaddleOCR 2.9.1
+### 환경 (2026-01-21 업데이트)
+- PaddlePaddle GPU 3.2.0 (CUDA 12.6)
+- PaddleOCR 3.3.3 (PP-OCRv5)
 - numpy 1.26.4
 - pymupdf (PDF 처리용)
 
-### 올바른 문법 (PaddleOCR 2.9.x)
+### 올바른 문법 (PaddleOCR 3.x / PP-OCRv5)
 ```python
+import os
+os.environ['DISABLE_MODEL_SOURCE_CHECK'] = 'True'
+
+import paddle
+paddle.set_device('gpu:0')
+
 from paddleocr import PaddleOCR
 
-# GPU 사용
-ocr = PaddleOCR(lang='en', use_gpu=True)
+# PP-OCRv5 초기화
+ocr = PaddleOCR(lang='en')
 
-# PDF OCR
-result = ocr.ocr('파일경로.pdf')
+# 이미지 OCR (predict 메서드 사용)
+result = ocr.predict('image.png')
 
-# 결과 파싱
-for line in result[0]:
-    text, confidence = line[1]
-    print(f"[{confidence:.3f}] {text}")
+# 결과 파싱 (3.x 형식)
+res = result[0]
+texts = res['rec_texts']
+scores = res['rec_scores']
+
+for text, score in zip(texts, scores):
+    print(f"[{score:.3f}] {text}")
 ```
 
 ### 주의사항
-- PaddleOCR 3.x 문법 사용 금지 (use_angle_cls 등 deprecated)
-- numpy 2.x 사용 금지 (호환성 문제)
+- PaddleOCR 2.x API (ocr.ocr(), use_gpu 파라미터) 사용 금지
+- paddle.set_device('gpu:0')으로 GPU 설정
 - lang='id' 대신 lang='en' 사용 (라틴 문자 인식)
+- PaddleOCR-VL은 인도네시아 법령 문서에 적합하지 않음 (PP-OCRv5 사용)
+
+### OCR Pipeline V3 사용법
+```bash
+# DB 스키마 초기화
+PYTHONPATH=. python -m peraturan.src.ocr.pipeline_v3 init
+
+# 파이프라인 실행
+PYTHONPATH=. python -m peraturan.src.ocr.pipeline_v3 run --limit 100
+
+# 특정 단계만 실행
+PYTHONPATH=. python -m peraturan.src.ocr.pipeline_v3 run --stage page_gen --limit 100
+PYTHONPATH=. python -m peraturan.src.ocr.pipeline_v3 run --stage ocr --limit 50
+
+# 상태 확인
+PYTHONPATH=. python -m peraturan.src.ocr.pipeline_v3 status
+```
 
 <!-- MANUAL ADDITIONS END -->

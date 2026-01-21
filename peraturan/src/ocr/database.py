@@ -20,7 +20,8 @@ from datetime import datetime
 from .schema import SCHEMA_SQL
 from .models import (
     Document, Header, Cluster, PatternRule, OCRResult,
-    PipelineState, get_priority, DocumentStage
+    PipelineState, get_priority, DocumentStage,
+    PageImage, ImageNoiseRule, QualityMetrics, ProcessingCheckpoint,
 )
 
 logger = logging.getLogger(__name__)
@@ -200,6 +201,229 @@ class OCRPipelineDB:
                 stage_counts.get("akn_generated", 0),
                 datetime.now().isoformat()
             ))
+
+
+class PageImageManager:
+    """페이지 이미지 관리자 (Pipeline V3)"""
+
+    def __init__(self, pipeline_db: OCRPipelineDB):
+        self.pipeline_db = pipeline_db
+
+    def get_page_images(
+        self,
+        document_id: str = None,
+        status: str = None,
+        cluster_id: int = None,
+        limit: int = None,
+    ) -> list[dict]:
+        """페이지 이미지 조회"""
+        with self.pipeline_db.connection() as conn:
+            query = "SELECT * FROM page_images WHERE 1=1"
+            params = []
+
+            if document_id:
+                query += " AND document_id = ?"
+                params.append(document_id)
+
+            if status:
+                query += " AND status = ?"
+                params.append(status)
+
+            if cluster_id:
+                query += " AND cluster_id = ?"
+                params.append(cluster_id)
+
+            query += " ORDER BY document_id, page_number"
+
+            if limit:
+                query += f" LIMIT {limit}"
+
+            rows = conn.execute(query, params).fetchall()
+            return [dict(row) for row in rows]
+
+    def save_page_image(self, page_image: PageImage) -> None:
+        """페이지 이미지 저장"""
+        with self.pipeline_db.connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO page_images
+                (document_id, page_number, image_path, cleaned_image_path,
+                 cluster_id, status, error_message, updated_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))
+            """, (
+                page_image.document_id,
+                page_image.page_number,
+                page_image.image_path,
+                page_image.cleaned_image_path,
+                page_image.cluster_id,
+                page_image.status,
+                page_image.error_message,
+            ))
+
+    def get_stats(self) -> dict:
+        """페이지 이미지 통계"""
+        with self.pipeline_db.connection() as conn:
+            rows = conn.execute("""
+                SELECT status, COUNT(*) as count
+                FROM page_images GROUP BY status
+            """).fetchall()
+            return {row["status"]: row["count"] for row in rows}
+
+
+class ImageNoiseRuleManager:
+    """이미지 노이즈 규칙 관리자 (Pipeline V3)"""
+
+    def __init__(self, pipeline_db: OCRPipelineDB):
+        self.pipeline_db = pipeline_db
+
+    def get_rule(self, cluster_id: int) -> dict | None:
+        """클러스터별 노이즈 규칙 조회"""
+        with self.pipeline_db.connection() as conn:
+            row = conn.execute("""
+                SELECT * FROM image_noise_rules
+                WHERE cluster_id = ? AND is_active = 1
+                ORDER BY id DESC LIMIT 1
+            """, (cluster_id,)).fetchone()
+            return dict(row) if row else None
+
+    def save_rule(self, rule: ImageNoiseRule) -> int:
+        """노이즈 규칙 저장"""
+        with self.pipeline_db.connection() as conn:
+            if rule.id:
+                conn.execute("""
+                    UPDATE image_noise_rules SET
+                        header_crop_ratio = ?, footer_crop_ratio = ?,
+                        left_crop_ratio = ?, right_crop_ratio = ?,
+                        mask_regions = ?, grayscale = ?, denoise = ?,
+                        deskew = ?, binarize = ?, binarize_threshold = ?,
+                        description = ?, notes = ?, is_active = ?,
+                        updated_at = datetime('now')
+                    WHERE id = ?
+                """, (
+                    rule.header_crop_ratio, rule.footer_crop_ratio,
+                    rule.left_crop_ratio, rule.right_crop_ratio,
+                    json.dumps(rule.mask_regions) if rule.mask_regions else None,
+                    int(rule.grayscale), int(rule.denoise),
+                    int(rule.deskew), int(rule.binarize), rule.binarize_threshold,
+                    rule.description, rule.notes, int(rule.is_active),
+                    rule.id,
+                ))
+                return rule.id
+            else:
+                cursor = conn.execute("""
+                    INSERT INTO image_noise_rules
+                    (cluster_id, header_crop_ratio, footer_crop_ratio,
+                     left_crop_ratio, right_crop_ratio, mask_regions,
+                     grayscale, denoise, deskew, binarize, binarize_threshold,
+                     description, notes, is_active)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """, (
+                    rule.cluster_id, rule.header_crop_ratio, rule.footer_crop_ratio,
+                    rule.left_crop_ratio, rule.right_crop_ratio,
+                    json.dumps(rule.mask_regions) if rule.mask_regions else None,
+                    int(rule.grayscale), int(rule.denoise),
+                    int(rule.deskew), int(rule.binarize), rule.binarize_threshold,
+                    rule.description, rule.notes, int(rule.is_active),
+                ))
+                return cursor.lastrowid
+
+    def list_rules(self) -> list[dict]:
+        """모든 활성 규칙 목록"""
+        with self.pipeline_db.connection() as conn:
+            rows = conn.execute("""
+                SELECT r.*, c.description as cluster_desc, c.document_count
+                FROM image_noise_rules r
+                JOIN clusters c ON r.cluster_id = c.id
+                WHERE r.is_active = 1
+                ORDER BY c.document_count DESC
+            """).fetchall()
+            return [dict(row) for row in rows]
+
+
+class QualityMetricsManager:
+    """품질 지표 관리자 (Pipeline V3)"""
+
+    def __init__(self, pipeline_db: OCRPipelineDB):
+        self.pipeline_db = pipeline_db
+
+    def get_metrics(self, document_id: str) -> dict | None:
+        """문서별 품질 지표 조회"""
+        with self.pipeline_db.connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM quality_metrics WHERE document_id = ?",
+                (document_id,)
+            ).fetchone()
+            return dict(row) if row else None
+
+    def save_metrics(self, metrics: QualityMetrics) -> None:
+        """품질 지표 저장"""
+        with self.pipeline_db.connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO quality_metrics
+                (document_id, avg_ocr_confidence, min_ocr_confidence, max_ocr_confidence,
+                 word_recognition_rate, legal_term_rate, broken_char_ratio,
+                 has_pasal, has_ayat, structure_score, xml_valid, xml_errors,
+                 overall_score, quality_tier, needs_manual_review, manual_review_reason)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                metrics.document_id,
+                metrics.avg_ocr_confidence, metrics.min_ocr_confidence, metrics.max_ocr_confidence,
+                metrics.word_recognition_rate, metrics.legal_term_rate, metrics.broken_char_ratio,
+                int(metrics.has_pasal), int(metrics.has_ayat), metrics.structure_score,
+                int(metrics.xml_valid), json.dumps(metrics.xml_errors) if metrics.xml_errors else None,
+                metrics.overall_score, metrics.quality_tier,
+                int(metrics.needs_manual_review), metrics.manual_review_reason,
+            ))
+
+    def get_stats(self) -> dict:
+        """품질 통계"""
+        with self.pipeline_db.connection() as conn:
+            # 등급별 통계
+            rows = conn.execute("""
+                SELECT quality_tier, COUNT(*) as count, AVG(overall_score) as avg_score
+                FROM quality_metrics GROUP BY quality_tier
+            """).fetchall()
+
+            by_tier = {row["quality_tier"]: {
+                "count": row["count"],
+                "avg_score": row["avg_score"],
+            } for row in rows}
+
+            # 수동 검토 통계
+            row = conn.execute("""
+                SELECT
+                    COUNT(*) as total,
+                    SUM(CASE WHEN needs_manual_review = 1 THEN 1 ELSE 0 END) as needs_review,
+                    SUM(CASE WHEN reviewed_at IS NOT NULL THEN 1 ELSE 0 END) as reviewed
+                FROM quality_metrics
+            """).fetchone()
+
+            return {
+                "by_tier": by_tier,
+                "total": row["total"],
+                "needs_review": row["needs_review"],
+                "reviewed": row["reviewed"],
+            }
+
+    def get_documents_for_review(self, tier: str = None, limit: int = 50) -> list[dict]:
+        """수동 검토 대상 문서 목록"""
+        with self.pipeline_db.connection() as conn:
+            query = """
+                SELECT q.*, d.jenis, d.nomor, d.tahun, d.tentang
+                FROM quality_metrics q
+                JOIN documents d ON q.document_id = d.id
+                WHERE q.needs_manual_review = 1 AND q.reviewed_at IS NULL
+            """
+            params = []
+
+            if tier:
+                query += " AND q.quality_tier = ?"
+                params.append(tier)
+
+            query += " ORDER BY q.overall_score ASC LIMIT ?"
+            params.append(limit)
+
+            rows = conn.execute(query, params).fetchall()
+            return [dict(row) for row in rows]
 
 
 class DocumentMigrator:

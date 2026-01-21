@@ -551,4 +551,207 @@ CREATE INDEX IF NOT EXISTS idx_test_thresholds_current ON test_thresholds(is_cur
 -- 기본 임계값 삽입
 INSERT OR IGNORE INTO test_thresholds (id, quality_threshold, manual_review_trigger, broken_ratio_alert, word_recognition_min, ocr_confidence_min, is_current, calibration_notes)
 VALUES (1, 0.92, 0.50, 0.10, 0.40, 0.60, 1, 'Initial default thresholds');
+
+-- ============================================
+-- 17. 페이지 이미지 테이블 (Pipeline V3)
+-- ============================================
+CREATE TABLE IF NOT EXISTS page_images (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    document_id TEXT NOT NULL,
+    page_number INTEGER NOT NULL,
+
+    -- 이미지 경로
+    image_path TEXT,                        -- 원본 페이지 이미지 경로
+    cleaned_image_path TEXT,                -- 노이즈 제거된 이미지 경로
+
+    -- 클러스터 정보
+    cluster_id INTEGER,                     -- 문서가 속한 클러스터
+
+    -- 처리 상태
+    status TEXT DEFAULT 'pending',          -- pending, generated, cleaned, ocr_done, error
+    error_message TEXT,
+
+    -- 타임스탬프
+    created_at TEXT DEFAULT (datetime('now')),
+    updated_at TEXT DEFAULT (datetime('now')),
+
+    UNIQUE(document_id, page_number),
+    FOREIGN KEY (document_id) REFERENCES documents(id),
+    FOREIGN KEY (cluster_id) REFERENCES clusters(id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_page_images_document ON page_images(document_id);
+CREATE INDEX IF NOT EXISTS idx_page_images_status ON page_images(status);
+CREATE INDEX IF NOT EXISTS idx_page_images_cluster ON page_images(cluster_id);
+
+-- ============================================
+-- 18. 이미지 노이즈 규칙 (클러스터별)
+-- ============================================
+CREATE TABLE IF NOT EXISTS image_noise_rules (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    cluster_id INTEGER NOT NULL,
+
+    -- 크롭 비율
+    header_crop_ratio REAL DEFAULT 0.0,     -- 상단 크롭 비율 (0.0-0.5)
+    footer_crop_ratio REAL DEFAULT 0.0,     -- 하단 크롭 비율 (0.0-0.2)
+    left_crop_ratio REAL DEFAULT 0.0,       -- 좌측 크롭 비율 (0.0-0.1)
+    right_crop_ratio REAL DEFAULT 0.0,      -- 우측 크롭 비율 (0.0-0.1)
+
+    -- 마스킹 영역
+    mask_regions TEXT,                      -- JSON: [{"x1":0, "y1":0, "x2":100, "y2":50, "desc":"워터마크"}]
+
+    -- 이미지 전처리 옵션
+    grayscale INTEGER DEFAULT 0,            -- 그레이스케일 변환
+    denoise INTEGER DEFAULT 0,              -- 노이즈 제거 (cv2)
+    deskew INTEGER DEFAULT 0,               -- 기울기 보정
+    binarize INTEGER DEFAULT 0,             -- 이진화
+    binarize_threshold INTEGER DEFAULT 127, -- 이진화 임계값
+
+    -- 메타데이터
+    description TEXT,
+    notes TEXT,
+
+    -- 활성화
+    is_active INTEGER DEFAULT 1,
+
+    -- 타임스탬프
+    created_at TEXT DEFAULT (datetime('now')),
+    updated_at TEXT DEFAULT (datetime('now')),
+
+    FOREIGN KEY (cluster_id) REFERENCES clusters(id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_image_noise_rules_cluster ON image_noise_rules(cluster_id);
+CREATE INDEX IF NOT EXISTS idx_image_noise_rules_active ON image_noise_rules(is_active);
+
+-- ============================================
+-- 19. 처리 체크포인트 (재시작 지원)
+-- ============================================
+CREATE TABLE IF NOT EXISTS processing_checkpoints (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    -- 체크포인트 식별
+    stage TEXT NOT NULL,                    -- page_gen, noise_removal, ocr, text_clean, quality
+    batch_id TEXT,                          -- 배치 실행 ID (선택)
+
+    -- 진행 상황
+    last_document_id TEXT,                  -- 마지막 처리 문서
+    last_page_number INTEGER,               -- 마지막 처리 페이지
+    processed_count INTEGER DEFAULT 0,      -- 처리된 항목 수
+    total_count INTEGER,                    -- 전체 항목 수
+
+    -- 상태
+    status TEXT DEFAULT 'running',          -- running, paused, completed, failed
+    error_message TEXT,
+
+    -- 실행 시간
+    started_at TEXT DEFAULT (datetime('now')),
+    last_updated_at TEXT DEFAULT (datetime('now')),
+    completed_at TEXT,
+
+    -- 설정 (재시작 시 동일 설정 사용)
+    config_json TEXT,                       -- JSON: 실행 설정
+
+    UNIQUE(stage, batch_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_checkpoints_stage ON processing_checkpoints(stage);
+CREATE INDEX IF NOT EXISTS idx_checkpoints_status ON processing_checkpoints(status);
+
+-- ============================================
+-- 20. 품질 지표 (문서별)
+-- ============================================
+CREATE TABLE IF NOT EXISTS quality_metrics (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    document_id TEXT NOT NULL UNIQUE,
+
+    -- OCR 품질 지표
+    avg_ocr_confidence REAL,                -- 평균 OCR 신뢰도 (0.0-1.0)
+    min_ocr_confidence REAL,                -- 최소 OCR 신뢰도
+    max_ocr_confidence REAL,                -- 최대 OCR 신뢰도
+
+    -- 텍스트 품질 지표
+    word_recognition_rate REAL,             -- 사전 단어 인식률 (0.0-1.0)
+    legal_term_rate REAL,                   -- 법률 용어 비율 (0.0-1.0)
+    broken_char_ratio REAL,                 -- 깨진 문자 비율 (0.0-1.0)
+
+    -- 구조 품질 지표
+    has_pasal INTEGER DEFAULT 0,            -- Pasal 존재 여부
+    has_ayat INTEGER DEFAULT 0,             -- Ayat 존재 여부
+    structure_score REAL,                   -- 구조 점수 (0.0-1.0)
+
+    -- XML 품질 지표
+    xml_valid INTEGER DEFAULT 0,            -- XML 유효성
+    xml_errors TEXT,                        -- JSON: XML 오류 목록
+
+    -- 종합 점수
+    overall_score REAL,                     -- 가중 평균 점수 (0.0-1.0)
+    quality_tier TEXT,                      -- 'high', 'medium', 'low', 'error'
+
+    -- 수동 검토
+    needs_manual_review INTEGER DEFAULT 0,  -- 수동 검토 필요 여부
+    manual_review_reason TEXT,              -- 수동 검토 사유
+    reviewed_at TEXT,                       -- 검토 완료 시간
+    reviewer_notes TEXT,                    -- 검토자 메모
+
+    -- 타임스탬프
+    created_at TEXT DEFAULT (datetime('now')),
+    updated_at TEXT DEFAULT (datetime('now')),
+
+    FOREIGN KEY (document_id) REFERENCES documents(id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_quality_metrics_document ON quality_metrics(document_id);
+CREATE INDEX IF NOT EXISTS idx_quality_metrics_tier ON quality_metrics(quality_tier);
+CREATE INDEX IF NOT EXISTS idx_quality_metrics_manual ON quality_metrics(needs_manual_review);
+CREATE INDEX IF NOT EXISTS idx_quality_metrics_score ON quality_metrics(overall_score);
+
+-- ============================================
+-- 21. 텍스트 노이즈 규칙 (OCR 후 정제)
+-- ============================================
+CREATE TABLE IF NOT EXISTS text_noise_rules (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    -- 범위
+    scope TEXT DEFAULT 'global',            -- global, cluster_specific
+    cluster_id INTEGER,                     -- cluster_specific인 경우
+
+    -- 규칙 유형
+    rule_type TEXT NOT NULL,                -- regex, exact, startswith, endswith, contains, line_frequency
+
+    -- 규칙 내용
+    pattern TEXT NOT NULL,                  -- 패턴 또는 텍스트
+    replacement TEXT DEFAULT '',            -- 치환 문자열 (빈 문자열 = 삭제)
+
+    -- 조건 (선택)
+    min_frequency REAL,                     -- line_frequency 타입: 최소 등장 비율 (0.0-1.0)
+    position TEXT,                          -- 'header', 'footer', 'any' (적용 위치)
+
+    -- 메타데이터
+    description TEXT,
+    priority INTEGER DEFAULT 100,           -- 낮을수록 먼저 적용
+
+    -- 활성화
+    is_active INTEGER DEFAULT 1,
+
+    -- 타임스탬프
+    created_at TEXT DEFAULT (datetime('now')),
+
+    FOREIGN KEY (cluster_id) REFERENCES clusters(id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_text_noise_rules_scope ON text_noise_rules(scope);
+CREATE INDEX IF NOT EXISTS idx_text_noise_rules_type ON text_noise_rules(rule_type);
+CREATE INDEX IF NOT EXISTS idx_text_noise_rules_active ON text_noise_rules(is_active);
+CREATE INDEX IF NOT EXISTS idx_text_noise_rules_priority ON text_noise_rules(priority);
+
+-- 기본 텍스트 노이즈 규칙 삽입
+INSERT OR IGNORE INTO text_noise_rules (id, scope, rule_type, pattern, description, priority) VALUES
+    (1, 'global', 'regex', 'www\\.\\S+\\.go\\.id', '정부 사이트 URL', 10),
+    (2, 'global', 'regex', '^\\s*\\d{1,4}\\s*$', '페이지 번호 (숫자만)', 20),
+    (3, 'global', 'exact', 'REPUBLIK INDONESIA', '국가명 단독 라인', 30),
+    (4, 'global', 'exact', 'SALINAN', '사본 표시', 30),
+    (5, 'global', 'regex', '^-\\s*\\d+\\s*-$', '페이지 번호 (대시 포함)', 20),
+    (6, 'global', 'contains', 'ditjen Peraturan Perundang-undangan', '기관명 워터마크', 40),
+    (7, 'global', 'line_frequency', '', '60% 이상 페이지에 등장하는 라인', 50);
 """

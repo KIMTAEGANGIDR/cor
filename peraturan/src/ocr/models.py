@@ -394,3 +394,299 @@ def get_priority(jenis: str) -> int:
         if key in jenis_upper:
             return priority
     return 10  # 기본 우선순위
+
+
+# ============================================
+# Pipeline V3 Models
+# ============================================
+
+class PageImageStatus(str, Enum):
+    """페이지 이미지 처리 상태"""
+    PENDING = "pending"
+    GENERATED = "generated"
+    CLEANED = "cleaned"
+    OCR_DONE = "ocr_done"
+    ERROR = "error"
+
+
+class CheckpointStatus(str, Enum):
+    """체크포인트 상태"""
+    RUNNING = "running"
+    PAUSED = "paused"
+    COMPLETED = "completed"
+    FAILED = "failed"
+
+
+class QualityTier(str, Enum):
+    """품질 등급"""
+    HIGH = "high"
+    MEDIUM = "medium"
+    LOW = "low"
+    ERROR = "error"
+
+
+class TextNoiseRuleType(str, Enum):
+    """텍스트 노이즈 규칙 유형"""
+    REGEX = "regex"
+    EXACT = "exact"
+    STARTSWITH = "startswith"
+    ENDSWITH = "endswith"
+    CONTAINS = "contains"
+    LINE_FREQUENCY = "line_frequency"
+
+
+@dataclass
+class PageImage:
+    """페이지 이미지"""
+    id: Optional[int] = None
+    document_id: str = ""
+    page_number: int = 0
+    image_path: Optional[str] = None
+    cleaned_image_path: Optional[str] = None
+    cluster_id: Optional[int] = None
+    status: str = PageImageStatus.PENDING.value
+    error_message: Optional[str] = None
+    created_at: Optional[str] = None
+    updated_at: Optional[str] = None
+
+
+@dataclass
+class ImageNoiseRule:
+    """이미지 노이즈 규칙"""
+    id: Optional[int] = None
+    cluster_id: int = 0
+
+    # 크롭 비율
+    header_crop_ratio: float = 0.0
+    footer_crop_ratio: float = 0.0
+    left_crop_ratio: float = 0.0
+    right_crop_ratio: float = 0.0
+
+    # 마스킹 영역 (JSON)
+    mask_regions: Optional[list] = None
+
+    # 전처리 옵션
+    grayscale: bool = False
+    denoise: bool = False
+    deskew: bool = False
+    binarize: bool = False
+    binarize_threshold: int = 127
+
+    # 메타데이터
+    description: Optional[str] = None
+    notes: Optional[str] = None
+    is_active: bool = True
+
+    created_at: Optional[str] = None
+    updated_at: Optional[str] = None
+
+    @property
+    def mask_regions_list(self) -> list:
+        if isinstance(self.mask_regions, str):
+            return json.loads(self.mask_regions)
+        return self.mask_regions or []
+
+    def to_json_fields(self) -> dict:
+        return {
+            "mask_regions": json.dumps(self.mask_regions) if self.mask_regions else None,
+        }
+
+
+@dataclass
+class ProcessingCheckpoint:
+    """처리 체크포인트"""
+    id: Optional[int] = None
+    stage: str = ""
+    batch_id: Optional[str] = None
+
+    # 진행 상황
+    last_document_id: Optional[str] = None
+    last_page_number: Optional[int] = None
+    processed_count: int = 0
+    total_count: Optional[int] = None
+
+    # 상태
+    status: str = CheckpointStatus.RUNNING.value
+    error_message: Optional[str] = None
+
+    # 시간
+    started_at: Optional[str] = None
+    last_updated_at: Optional[str] = None
+    completed_at: Optional[str] = None
+
+    # 설정
+    config_json: Optional[dict] = None
+
+    @property
+    def config(self) -> dict:
+        if isinstance(self.config_json, str):
+            return json.loads(self.config_json)
+        return self.config_json or {}
+
+    @property
+    def progress_ratio(self) -> float:
+        if self.total_count and self.total_count > 0:
+            return self.processed_count / self.total_count
+        return 0.0
+
+
+@dataclass
+class QualityMetrics:
+    """품질 지표"""
+    id: Optional[int] = None
+    document_id: str = ""
+
+    # OCR 품질
+    avg_ocr_confidence: Optional[float] = None
+    min_ocr_confidence: Optional[float] = None
+    max_ocr_confidence: Optional[float] = None
+
+    # 텍스트 품질
+    word_recognition_rate: Optional[float] = None
+    legal_term_rate: Optional[float] = None
+    broken_char_ratio: Optional[float] = None
+
+    # 구조 품질
+    has_pasal: bool = False
+    has_ayat: bool = False
+    structure_score: Optional[float] = None
+
+    # XML 품질
+    xml_valid: bool = False
+    xml_errors: Optional[list] = None
+
+    # 종합
+    overall_score: Optional[float] = None
+    quality_tier: str = QualityTier.MEDIUM.value
+
+    # 수동 검토
+    needs_manual_review: bool = False
+    manual_review_reason: Optional[str] = None
+    reviewed_at: Optional[str] = None
+    reviewer_notes: Optional[str] = None
+
+    created_at: Optional[str] = None
+    updated_at: Optional[str] = None
+
+    def calculate_overall_score(self) -> float:
+        """
+        가중 평균 점수 계산
+
+        가중치:
+        - OCR 신뢰도: 0.25
+        - 단어 인식률: 0.30
+        - 법률 용어율: 0.20
+        - 조문 존재: 0.15
+        - XML 유효성: 0.10
+        """
+        score = 0.0
+        weights_used = 0.0
+
+        if self.avg_ocr_confidence is not None:
+            score += self.avg_ocr_confidence * 0.25
+            weights_used += 0.25
+
+        if self.word_recognition_rate is not None:
+            score += self.word_recognition_rate * 0.30
+            weights_used += 0.30
+
+        if self.legal_term_rate is not None:
+            # 법률 용어율은 0.05 이상이면 만점
+            normalized = min(self.legal_term_rate / 0.05, 1.0)
+            score += normalized * 0.20
+            weights_used += 0.20
+
+        if self.has_pasal:
+            score += 0.15
+        weights_used += 0.15
+
+        if self.xml_valid:
+            score += 0.10
+        weights_used += 0.10
+
+        return score / weights_used if weights_used > 0 else 0.0
+
+    def determine_tier(self) -> str:
+        """품질 등급 결정"""
+        if self.overall_score is None:
+            self.overall_score = self.calculate_overall_score()
+
+        if self.overall_score >= 0.80:
+            return QualityTier.HIGH.value
+        elif self.overall_score >= 0.60:
+            return QualityTier.MEDIUM.value
+        elif self.overall_score >= 0.40:
+            return QualityTier.LOW.value
+        else:
+            return QualityTier.ERROR.value
+
+
+@dataclass
+class TextNoiseRule:
+    """텍스트 노이즈 규칙"""
+    id: Optional[int] = None
+    scope: str = "global"
+    cluster_id: Optional[int] = None
+    rule_type: str = TextNoiseRuleType.REGEX.value
+    pattern: str = ""
+    replacement: str = ""
+    min_frequency: Optional[float] = None
+    position: Optional[str] = None  # 'header', 'footer', 'any'
+    description: Optional[str] = None
+    priority: int = 100
+    is_active: bool = True
+    created_at: Optional[str] = None
+
+
+# ============================================
+# Pipeline V3 Configuration
+# ============================================
+
+@dataclass
+class PipelineV3Config:
+    """파이프라인 V3 설정"""
+    # 이미지 생성
+    image_dpi: int = 150
+    image_format: str = "jpeg"
+    image_quality: int = 85
+
+    # 배치 크기
+    page_gen_batch_size: int = 100
+    ocr_batch_size: int = 50
+    workers: int = 8
+
+    # 경로
+    page_images_dir: str = "peraturan/data/page_images"
+    cleaned_images_dir: str = "peraturan/data/cleaned_images"
+    output_dir: str = "peraturan/data/output"
+
+    # 품질 임계값
+    quality_pass_threshold: float = 0.80
+    quality_warning_threshold: float = 0.60
+    manual_review_threshold: float = 0.40
+
+    # OCR 설정
+    ocr_lang: str = "en"
+    use_gpu: bool = True
+
+    def to_dict(self) -> dict:
+        return {
+            "image_dpi": self.image_dpi,
+            "image_format": self.image_format,
+            "image_quality": self.image_quality,
+            "page_gen_batch_size": self.page_gen_batch_size,
+            "ocr_batch_size": self.ocr_batch_size,
+            "workers": self.workers,
+            "page_images_dir": self.page_images_dir,
+            "cleaned_images_dir": self.cleaned_images_dir,
+            "output_dir": self.output_dir,
+            "quality_pass_threshold": self.quality_pass_threshold,
+            "quality_warning_threshold": self.quality_warning_threshold,
+            "manual_review_threshold": self.manual_review_threshold,
+            "ocr_lang": self.ocr_lang,
+            "use_gpu": self.use_gpu,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "PipelineV3Config":
+        return cls(**{k: v for k, v in data.items() if hasattr(cls, k)})
