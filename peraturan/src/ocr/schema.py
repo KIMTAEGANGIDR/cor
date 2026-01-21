@@ -435,4 +435,120 @@ CREATE TABLE IF NOT EXISTS processing_logs (
 CREATE INDEX IF NOT EXISTS idx_logs_document ON processing_logs(document_id);
 CREATE INDEX IF NOT EXISTS idx_logs_stage ON processing_logs(stage);
 CREATE INDEX IF NOT EXISTS idx_logs_created ON processing_logs(created_at);
+
+-- ============================================
+-- 14. 테스트 실행 (OCR 파이프라인 검증)
+-- ============================================
+CREATE TABLE IF NOT EXISTS test_runs (
+    run_id TEXT PRIMARY KEY,                -- 테스트 실행 ID (예: phase1_20241215_120000)
+    phase TEXT NOT NULL,                    -- phase1, phase2, phase3
+
+    -- 실행 정보
+    started_at TEXT,                        -- 시작 시간
+    completed_at TEXT,                      -- 완료 시간
+
+    -- 샘플 통계
+    total_samples INTEGER DEFAULT 0,        -- 총 샘플 수
+    processed INTEGER DEFAULT 0,            -- 처리 완료
+    failed INTEGER DEFAULT 0,               -- 실패
+
+    -- 설정
+    config_json TEXT,                       -- JSON: 실행 설정
+
+    -- 결과 요약
+    summary_json TEXT,                      -- JSON: 요약 통계
+                                           -- avg_quality_score, manual_review_count 등
+
+    -- 품질 통계
+    avg_quality_score REAL,                 -- 평균 품질 점수
+    median_quality_score REAL,              -- 중앙값 품질 점수
+    min_quality_score REAL,                 -- 최소 품질 점수
+    max_quality_score REAL,                 -- 최대 품질 점수
+
+    -- 수동 검토 통계
+    manual_review_count INTEGER DEFAULT 0,  -- 수동 검토 필요 페이지 수
+    manual_review_ratio REAL,               -- 수동 검토 비율
+
+    -- 처리 시간
+    total_processing_time_ms INTEGER,       -- 총 처리 시간 (ms)
+    avg_processing_time_ms REAL,            -- 평균 처리 시간 (ms)
+
+    created_at TEXT DEFAULT (datetime('now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_test_runs_phase ON test_runs(phase);
+CREATE INDEX IF NOT EXISTS idx_test_runs_started ON test_runs(started_at);
+
+-- ============================================
+-- 15. 테스트 샘플 (개별 문서 결과)
+-- ============================================
+CREATE TABLE IF NOT EXISTS test_samples (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    run_id TEXT NOT NULL,                   -- 테스트 실행 ID
+    document_id TEXT NOT NULL,              -- 문서 ID
+
+    -- 문서 정보
+    category TEXT,                          -- 문서 카테고리 (uu, pp, perpres 등)
+    year INTEGER,                           -- 문서 연도
+
+    -- 품질 점수
+    avg_quality_score REAL,                 -- 평균 품질 점수
+
+    -- 페이지 통계
+    total_pages INTEGER,                    -- 총 페이지 수
+    pages_text INTEGER DEFAULT 0,           -- 내장 텍스트 사용 페이지
+    pages_ocr INTEGER DEFAULT 0,            -- OCR 사용 페이지
+    pages_hybrid INTEGER DEFAULT 0,         -- 하이브리드 페이지
+    pages_skip INTEGER DEFAULT 0,           -- 스킵 페이지
+    pages_manual INTEGER DEFAULT 0,         -- 수동 검토 필요 페이지
+
+    -- 처리 상태
+    status TEXT DEFAULT 'pending',          -- pending, completed, partial, failed
+    processing_time_ms INTEGER,             -- 처리 시간 (ms)
+    error_message TEXT,                     -- 오류 메시지
+
+    -- 상세 결과
+    result_json TEXT,                       -- JSON: 상세 결과 (페이지별 품질 등)
+
+    created_at TEXT DEFAULT (datetime('now')),
+
+    FOREIGN KEY (run_id) REFERENCES test_runs(run_id),
+    FOREIGN KEY (document_id) REFERENCES documents(id),
+    UNIQUE(run_id, document_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_test_samples_run ON test_samples(run_id);
+CREATE INDEX IF NOT EXISTS idx_test_samples_document ON test_samples(document_id);
+CREATE INDEX IF NOT EXISTS idx_test_samples_category ON test_samples(category);
+CREATE INDEX IF NOT EXISTS idx_test_samples_status ON test_samples(status);
+CREATE INDEX IF NOT EXISTS idx_test_samples_quality ON test_samples(avg_quality_score);
+
+-- ============================================
+-- 16. 테스트 임계값 (보정 이력)
+-- ============================================
+CREATE TABLE IF NOT EXISTS test_thresholds (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    run_id TEXT,                            -- 보정에 사용된 테스트 실행 ID
+
+    -- 임계값
+    quality_threshold REAL,                 -- TEXT vs OCR 결정 임계값
+    manual_review_trigger REAL,             -- 수동 검토 트리거 임계값
+    broken_ratio_alert REAL,                -- 깨진 문자 비율 경고 임계값
+    word_recognition_min REAL,              -- 최소 단어 인식률
+    ocr_confidence_min REAL,                -- 최소 OCR 신뢰도
+
+    -- 보정 정보
+    is_current INTEGER DEFAULT 0,           -- 현재 사용 중인 임계값 여부
+    calibration_notes TEXT,                 -- 보정 메모
+
+    created_at TEXT DEFAULT (datetime('now')),
+
+    FOREIGN KEY (run_id) REFERENCES test_runs(run_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_test_thresholds_current ON test_thresholds(is_current);
+
+-- 기본 임계값 삽입
+INSERT OR IGNORE INTO test_thresholds (id, quality_threshold, manual_review_trigger, broken_ratio_alert, word_recognition_min, ocr_confidence_min, is_current, calibration_notes)
+VALUES (1, 0.92, 0.50, 0.10, 0.40, 0.60, 1, 'Initial default thresholds');
 """

@@ -365,6 +365,289 @@ def migrate_documents(
     return results
 
 
+class TestRunManager:
+    """테스트 실행 관리자"""
+
+    def __init__(self, pipeline_db: OCRPipelineDB):
+        self.pipeline_db = pipeline_db
+
+    def create_test_run(
+        self,
+        run_id: str,
+        phase: str,
+        total_samples: int,
+        config: dict = None,
+    ) -> None:
+        """
+        테스트 실행 생성
+
+        Args:
+            run_id: 테스트 실행 ID
+            phase: 테스트 단계 (phase1, phase2, phase3)
+            total_samples: 총 샘플 수
+            config: 실행 설정 JSON
+        """
+        with self.pipeline_db.connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO test_runs
+                (run_id, phase, total_samples, config_json, started_at)
+                VALUES (?, ?, ?, ?, datetime('now'))
+            """, (
+                run_id,
+                phase,
+                total_samples,
+                json.dumps(config) if config else None,
+            ))
+
+    def update_test_run(
+        self,
+        run_id: str,
+        processed: int = None,
+        failed: int = None,
+        avg_quality_score: float = None,
+        median_quality_score: float = None,
+        min_quality_score: float = None,
+        max_quality_score: float = None,
+        manual_review_count: int = None,
+        manual_review_ratio: float = None,
+        total_processing_time_ms: int = None,
+        avg_processing_time_ms: float = None,
+        summary: dict = None,
+        completed: bool = False,
+    ) -> None:
+        """테스트 실행 상태 업데이트"""
+        updates = []
+        params = []
+
+        if processed is not None:
+            updates.append("processed = ?")
+            params.append(processed)
+
+        if failed is not None:
+            updates.append("failed = ?")
+            params.append(failed)
+
+        if avg_quality_score is not None:
+            updates.append("avg_quality_score = ?")
+            params.append(avg_quality_score)
+
+        if median_quality_score is not None:
+            updates.append("median_quality_score = ?")
+            params.append(median_quality_score)
+
+        if min_quality_score is not None:
+            updates.append("min_quality_score = ?")
+            params.append(min_quality_score)
+
+        if max_quality_score is not None:
+            updates.append("max_quality_score = ?")
+            params.append(max_quality_score)
+
+        if manual_review_count is not None:
+            updates.append("manual_review_count = ?")
+            params.append(manual_review_count)
+
+        if manual_review_ratio is not None:
+            updates.append("manual_review_ratio = ?")
+            params.append(manual_review_ratio)
+
+        if total_processing_time_ms is not None:
+            updates.append("total_processing_time_ms = ?")
+            params.append(total_processing_time_ms)
+
+        if avg_processing_time_ms is not None:
+            updates.append("avg_processing_time_ms = ?")
+            params.append(avg_processing_time_ms)
+
+        if summary is not None:
+            updates.append("summary_json = ?")
+            params.append(json.dumps(summary))
+
+        if completed:
+            updates.append("completed_at = datetime('now')")
+
+        if not updates:
+            return
+
+        params.append(run_id)
+
+        with self.pipeline_db.connection() as conn:
+            conn.execute(f"""
+                UPDATE test_runs
+                SET {', '.join(updates)}
+                WHERE run_id = ?
+            """, params)
+
+    def get_test_run(self, run_id: str) -> Optional[dict]:
+        """테스트 실행 조회"""
+        with self.pipeline_db.connection() as conn:
+            row = conn.execute(
+                "SELECT * FROM test_runs WHERE run_id = ?",
+                (run_id,)
+            ).fetchone()
+
+            if row:
+                return dict(row)
+            return None
+
+    def list_test_runs(self, phase: str = None, limit: int = 20) -> list:
+        """테스트 실행 목록 조회"""
+        with self.pipeline_db.connection() as conn:
+            query = "SELECT * FROM test_runs"
+            params = []
+
+            if phase:
+                query += " WHERE phase = ?"
+                params.append(phase)
+
+            query += " ORDER BY started_at DESC LIMIT ?"
+            params.append(limit)
+
+            rows = conn.execute(query, params).fetchall()
+            return [dict(row) for row in rows]
+
+    def add_test_sample(
+        self,
+        run_id: str,
+        document_id: str,
+        category: str,
+        year: int = None,
+        avg_quality_score: float = None,
+        total_pages: int = None,
+        pages_text: int = 0,
+        pages_ocr: int = 0,
+        pages_hybrid: int = 0,
+        pages_skip: int = 0,
+        pages_manual: int = 0,
+        status: str = "pending",
+        processing_time_ms: int = None,
+        error_message: str = None,
+        result_json: dict = None,
+    ) -> None:
+        """테스트 샘플 추가"""
+        with self.pipeline_db.connection() as conn:
+            conn.execute("""
+                INSERT OR REPLACE INTO test_samples
+                (run_id, document_id, category, year, avg_quality_score,
+                 total_pages, pages_text, pages_ocr, pages_hybrid, pages_skip, pages_manual,
+                 status, processing_time_ms, error_message, result_json)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                run_id, document_id, category, year, avg_quality_score,
+                total_pages, pages_text, pages_ocr, pages_hybrid, pages_skip, pages_manual,
+                status, processing_time_ms, error_message,
+                json.dumps(result_json) if result_json else None,
+            ))
+
+    def get_test_samples(
+        self,
+        run_id: str,
+        status: str = None,
+        category: str = None,
+    ) -> list:
+        """테스트 샘플 조회"""
+        with self.pipeline_db.connection() as conn:
+            query = "SELECT * FROM test_samples WHERE run_id = ?"
+            params = [run_id]
+
+            if status:
+                query += " AND status = ?"
+                params.append(status)
+
+            if category:
+                query += " AND category = ?"
+                params.append(category)
+
+            query += " ORDER BY avg_quality_score ASC"
+
+            rows = conn.execute(query, params).fetchall()
+            return [dict(row) for row in rows]
+
+    def get_test_stats(self, run_id: str) -> dict:
+        """테스트 실행 통계 조회"""
+        with self.pipeline_db.connection() as conn:
+            # 기본 통계
+            row = conn.execute("""
+                SELECT
+                    COUNT(*) as total,
+                    SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as completed,
+                    SUM(CASE WHEN status = 'failed' THEN 1 ELSE 0 END) as failed,
+                    AVG(avg_quality_score) as avg_quality,
+                    SUM(pages_manual) as total_manual
+                FROM test_samples
+                WHERE run_id = ?
+            """, (run_id,)).fetchone()
+
+            stats = dict(row)
+
+            # 카테고리별 통계
+            rows = conn.execute("""
+                SELECT category, COUNT(*) as count, AVG(avg_quality_score) as avg_quality
+                FROM test_samples
+                WHERE run_id = ?
+                GROUP BY category
+            """, (run_id,)).fetchall()
+
+            stats["by_category"] = {row["category"]: {
+                "count": row["count"],
+                "avg_quality": row["avg_quality"],
+            } for row in rows}
+
+            return stats
+
+    def save_thresholds(
+        self,
+        run_id: str,
+        quality_threshold: float,
+        manual_review_trigger: float,
+        broken_ratio_alert: float,
+        word_recognition_min: float,
+        ocr_confidence_min: float,
+        notes: str = None,
+        set_current: bool = False,
+    ) -> None:
+        """보정된 임계값 저장"""
+        with self.pipeline_db.connection() as conn:
+            # 새 임계값 저장
+            conn.execute("""
+                INSERT INTO test_thresholds
+                (run_id, quality_threshold, manual_review_trigger, broken_ratio_alert,
+                 word_recognition_min, ocr_confidence_min, is_current, calibration_notes)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                run_id, quality_threshold, manual_review_trigger, broken_ratio_alert,
+                word_recognition_min, ocr_confidence_min, 0, notes,
+            ))
+
+            if set_current:
+                # 현재 플래그 업데이트
+                conn.execute("UPDATE test_thresholds SET is_current = 0 WHERE is_current = 1")
+                conn.execute("""
+                    UPDATE test_thresholds
+                    SET is_current = 1
+                    WHERE run_id = ?
+                """, (run_id,))
+
+    def get_current_thresholds(self) -> dict:
+        """현재 사용 중인 임계값 조회"""
+        with self.pipeline_db.connection() as conn:
+            row = conn.execute("""
+                SELECT * FROM test_thresholds WHERE is_current = 1
+            """).fetchone()
+
+            if row:
+                return dict(row)
+
+            # 기본값 반환
+            return {
+                "quality_threshold": 0.92,
+                "manual_review_trigger": 0.50,
+                "broken_ratio_alert": 0.10,
+                "word_recognition_min": 0.40,
+                "ocr_confidence_min": 0.60,
+            }
+
+
 # CLI 인터페이스
 if __name__ == "__main__":
     import sys

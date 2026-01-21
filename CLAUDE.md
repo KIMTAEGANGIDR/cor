@@ -92,4 +92,34 @@ Python 3.11+: Follow standard conventions
 - 001-peraturan-crawler: Initial implementation (peraturan.go.id)
 
 <!-- MANUAL ADDITIONS START -->
+
+## PaddleOCR 설정 가이드
+
+### 환경
+- PaddlePaddle GPU 3.0.0 (CUDA 11.8)
+- PaddleOCR 2.9.1
+- numpy 1.26.4
+- pymupdf (PDF 처리용)
+
+### 올바른 문법 (PaddleOCR 2.9.x)
+```python
+from paddleocr import PaddleOCR
+
+# GPU 사용
+ocr = PaddleOCR(lang='en', use_gpu=True)
+
+# PDF OCR
+result = ocr.ocr('파일경로.pdf')
+
+# 결과 파싱
+for line in result[0]:
+    text, confidence = line[1]
+    print(f"[{confidence:.3f}] {text}")
+```
+
+### 주의사항
+- PaddleOCR 3.x 문법 사용 금지 (use_angle_cls 등 deprecated)
+- numpy 2.x 사용 금지 (호환성 문제)
+- lang='id' 대신 lang='en' 사용 (라틴 문자 인식)
+
 <!-- MANUAL ADDITIONS END -->
