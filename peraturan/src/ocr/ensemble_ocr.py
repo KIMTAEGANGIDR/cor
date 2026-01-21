@@ -12,10 +12,13 @@ PaddleOCR + Tesseract 조합으로 최적 결과 선택
 - 품질 점수로 비교
 - 유사도 0.9 이상이면 빠른 결과 (PaddleOCR) 우선
 - 불일치/저신뢰는 수동 큐 이동
+
+v2.1 (2026-01-21): 배치 처리 추가 (process_batch)
 """
 
 import os
 import tempfile
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from difflib import SequenceMatcher
 from enum import Enum
@@ -355,6 +358,52 @@ class EnsembleOCR:
         if not text1 or not text2:
             return 0.0
         return SequenceMatcher(None, text1, text2).ratio()
+
+    def process_batch(
+        self,
+        images: List[np.ndarray],
+        max_workers: int = 4,
+    ) -> List[OCRResult]:
+        """
+        배치 OCR 처리 (병렬화로 GPU 활용도 향상)
+
+        Args:
+            images: numpy 배열 이미지 리스트
+            max_workers: 병렬 워커 수
+
+        Returns:
+            OCRResult 리스트 (입력 순서 유지)
+        """
+        if not images:
+            return []
+
+        results = [None] * len(images)
+
+        def process_single(idx_img):
+            idx, img = idx_img
+            return idx, self._run_paddle(img)
+
+        # ThreadPoolExecutor로 병렬 처리
+        # GPU는 순차적이지만, 이미지 전처리/후처리를 병렬화
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            futures = {
+                executor.submit(process_single, (i, img)): i
+                for i, img in enumerate(images)
+            }
+
+            for future in as_completed(futures):
+                try:
+                    idx, result = future.result()
+                    results[idx] = result
+                except Exception as e:
+                    idx = futures[future]
+                    results[idx] = OCRResult(
+                        text="",
+                        confidence=0.0,
+                        engine=OCREngine.PADDLE,
+                    )
+
+        return results
 
     def check_engines(self) -> dict:
         """사용 가능한 엔진 확인"""

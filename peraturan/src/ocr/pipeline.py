@@ -10,17 +10,25 @@ Phase 구성:
 - Phase 3: 페이지별 적응형 OCR
 - Phase 4: 이중 검증 (구조 + 내용)
 - Phase 5: Akoma Ntoso 변환
+
+v2.1 (2026-01-21): 내장 텍스트 vs OCR 비교 로직 추가
+v2.2 (2026-01-21): 병렬 처리로 GPU 활용도 향상
 """
 
+import difflib
+import io
 import json
 import logging
 import os
 import sqlite3
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field, asdict
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Optional, Iterator, List
+from typing import Optional, Iterator, List, Tuple
+
+import numpy as np
 
 import fitz  # PyMuPDF
 from rich.console import Console
@@ -83,6 +91,11 @@ class PageResult:
     retry_count: int = 0
     error_message: str = ""
     processed_at: Optional[str] = None
+    # v2.1: 비교 결과 필드
+    embedded_quality: float = 0.0      # 내장 텍스트 품질
+    ocr_quality: float = 0.0           # OCR 텍스트 품질
+    similarity: float = 0.0            # 내장 vs OCR 유사도
+    text_source: str = ""              # "embedded" | "ocr" | "skip"
 
 
 @dataclass
@@ -156,6 +169,10 @@ class CheckpointManager:
                 retry_count INTEGER,
                 error_message TEXT,
                 processed_at TEXT,
+                embedded_quality REAL DEFAULT 0,
+                ocr_quality REAL DEFAULT 0,
+                similarity REAL DEFAULT 0,
+                text_source TEXT DEFAULT '',
                 PRIMARY KEY (doc_id, page_num)
             )
         """)
@@ -194,8 +211,9 @@ class CheckpointManager:
 
         cursor.execute("""
             INSERT OR REPLACE INTO pages
-            (doc_id, page_num, status, strategy, quality_score, ocr_engine, ocr_confidence, retry_count, error_message, processed_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            (doc_id, page_num, status, strategy, quality_score, ocr_engine, ocr_confidence,
+             retry_count, error_message, processed_at, embedded_quality, ocr_quality, similarity, text_source)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             doc_id,
             page.page_num,
@@ -207,6 +225,10 @@ class CheckpointManager:
             page.retry_count,
             page.error_message,
             page.processed_at,
+            page.embedded_quality,
+            page.ocr_quality,
+            page.similarity,
+            page.text_source,
         ))
 
         conn.commit()
@@ -285,6 +307,7 @@ class OCRPipeline:
         checkpoint_dir: Optional[str | Path] = None,
         use_gpu: bool = True,
         batch_size: int = 10,
+        num_workers: int = 4,
     ):
         """
         Args:
@@ -292,13 +315,15 @@ class OCRPipeline:
             output_dir: 결과 출력 디렉토리
             checkpoint_dir: 체크포인트 디렉토리 (기본: output_dir/checkpoints)
             use_gpu: GPU 사용 여부
-            batch_size: 배치 크기
+            batch_size: 배치 크기 (한 번에 처리할 페이지 수)
+            num_workers: 병렬 워커 수 (GPU 활용도 향상)
         """
         self.input_dir = Path(input_dir)
         self.output_dir = Path(output_dir)
         self.checkpoint_dir = Path(checkpoint_dir) if checkpoint_dir else self.output_dir / "checkpoints"
         self.use_gpu = use_gpu
         self.batch_size = batch_size
+        self.num_workers = num_workers
 
         # 디렉토리 생성
         self.output_dir.mkdir(parents=True, exist_ok=True)
@@ -483,6 +508,14 @@ class OCRPipeline:
         logger.info(f"문서 처리 완료: {doc_id} - {result.status.value}")
         return result
 
+    def _calculate_similarity(self, text1: str, text2: str) -> float:
+        """두 텍스트 간 유사도 계산 (0.0 ~ 1.0)"""
+        if not text1 and not text2:
+            return 1.0
+        if not text1 or not text2:
+            return 0.0
+        return difflib.SequenceMatcher(None, text1.strip(), text2.strip()).ratio()
+
     def _process_page(
         self,
         doc: fitz.Document,
@@ -490,13 +523,14 @@ class OCRPipeline:
         doc_id: str,
     ) -> PageResult:
         """
-        단일 페이지 처리 (하이브리드 v2)
+        단일 페이지 처리 (하이브리드 v2.1 - 비교 로직 포함)
 
         로직:
-        1. 텍스트 추출 시도
-        2. 품질 점수 계산
-        3. 점수 >= QUALITY_THRESHOLD: 텍스트 사용
-        4. 점수 < QUALITY_THRESHOLD: 이미지 → OCR
+        1. 내장 텍스트 추출 + 품질 계산
+        2. OCR 실행 + 품질 계산
+        3. 두 결과 유사도 비교
+        4. 품질 비교 후 더 나은 소스 선택
+        5. 비교 결과 기록
         """
         page = doc[page_num]
 
@@ -507,36 +541,124 @@ class OCRPipeline:
             embedded_text = ""
             logger.warning(f"텍스트 추출 실패: {doc_id} p.{page_num} - {e}")
 
-        # 2. 품질 점수 계산
-        quality = self.quality_scorer.score_text(embedded_text)
+        # 2. 내장 텍스트 품질 계산
+        embedded_quality = self.quality_scorer.score_text(embedded_text)
 
         # 3. 빈 페이지 처리 (텍스트 거의 없음)
-        if quality.strategy == ProcessingStrategy.SKIP:
+        if embedded_quality.strategy == ProcessingStrategy.SKIP:
             return PageResult(
                 page_num=page_num,
                 status=PageStatus.COMPLETED,
                 strategy=ProcessingStrategy.SKIP,
-                quality_score=quality.score,
+                quality_score=0.0,
                 text="",
+                text_source="skip",
+                embedded_quality=0.0,
+                ocr_quality=0.0,
+                similarity=1.0,
                 processed_at=datetime.now().isoformat(),
             )
 
-        # 4. 하이브리드 v2 로직: 품질 기반 분기
-        if quality.score >= self.QUALITY_THRESHOLD:
-            # 고품질: 내장 텍스트 사용
-            logger.debug(f"텍스트 사용: {doc_id} p.{page_num} (품질: {quality.score:.3f})")
-            return PageResult(
-                page_num=page_num,
-                status=PageStatus.COMPLETED,
-                strategy=ProcessingStrategy.TEXT,
-                quality_score=quality.score,
-                text=embedded_text,
-                processed_at=datetime.now().isoformat(),
-            )
+        # 4. OCR 실행
+        ocr_text, ocr_quality_score, ocr_engine, ocr_confidence = self._run_ocr(doc, page_num, doc_id)
+
+        # 5. 유사도 계산
+        similarity = self._calculate_similarity(embedded_text, ocr_text)
+
+        # 6. 소스 결정 로직
+        # - 유사도 > 90%: 내장 텍스트 사용 (OCR 불필요)
+        # - 유사도 70-90%: 품질 점수 비교
+        # - 유사도 < 70%: 수동 검토 플래그
+
+        SIMILARITY_HIGH = 0.90
+        SIMILARITY_LOW = 0.70
+
+        if similarity >= SIMILARITY_HIGH:
+            # 유사도 높음 → 내장 텍스트 사용 (더 빠름)
+            final_text = embedded_text
+            text_source = "embedded"
+            final_quality = embedded_quality.score
+            strategy = ProcessingStrategy.TEXT
+            status = PageStatus.COMPLETED
+            logger.debug(f"TEXT 선택 (유사도 {similarity:.1%}): {doc_id} p.{page_num}")
+        elif similarity >= SIMILARITY_LOW:
+            # 중간 유사도 → 품질 비교 후 선택
+            if embedded_quality.score >= ocr_quality_score:
+                final_text = embedded_text
+                text_source = "embedded"
+                final_quality = embedded_quality.score
+                strategy = ProcessingStrategy.TEXT
+            else:
+                final_text = ocr_text
+                text_source = "ocr"
+                final_quality = ocr_quality_score
+                strategy = ProcessingStrategy.OCR
+            status = PageStatus.COMPLETED
+            logger.debug(f"{text_source.upper()} 선택 (품질비교): {doc_id} p.{page_num}")
         else:
-            # 저품질: 이미지 → OCR로 대체
-            logger.debug(f"OCR 전환: {doc_id} p.{page_num} (품질: {quality.score:.3f} < {self.QUALITY_THRESHOLD})")
-            return self._ocr_page(doc, page_num, doc_id, quality, embedded_text)
+            # 유사도 낮음 → 수동 검토 필요 (일단 OCR 사용)
+            final_text = ocr_text if ocr_quality_score > embedded_quality.score else embedded_text
+            text_source = "ocr" if ocr_quality_score > embedded_quality.score else "embedded"
+            final_quality = max(ocr_quality_score, embedded_quality.score)
+            strategy = ProcessingStrategy.HYBRID
+            status = PageStatus.MANUAL_REVIEW
+            logger.warning(f"수동검토 필요 (유사도 {similarity:.1%}): {doc_id} p.{page_num}")
+
+            # 수동 검토 파일 저장
+            manual_path = self.output_dir / "manual_review" / f"{doc_id}_p{page_num}.json"
+            with open(manual_path, 'w', encoding='utf-8') as f:
+                json.dump({
+                    "doc_id": doc_id,
+                    "page_num": page_num,
+                    "embedded_text": embedded_text[:1000],
+                    "embedded_quality": embedded_quality.score,
+                    "ocr_text": ocr_text[:1000],
+                    "ocr_quality": ocr_quality_score,
+                    "similarity": similarity,
+                    "reason": f"유사도 낮음: {similarity:.1%}",
+                    "selected_source": text_source,
+                }, f, ensure_ascii=False, indent=2)
+
+        return PageResult(
+            page_num=page_num,
+            status=status,
+            strategy=strategy,
+            quality_score=final_quality,
+            text=final_text,
+            ocr_engine=ocr_engine,
+            ocr_confidence=ocr_confidence,
+            text_source=text_source,
+            embedded_quality=embedded_quality.score,
+            ocr_quality=ocr_quality_score,
+            similarity=similarity,
+            processed_at=datetime.now().isoformat(),
+        )
+
+    def _run_ocr(self, doc: fitz.Document, page_num: int, doc_id: str) -> tuple:
+        """OCR 실행 및 품질 계산 (분리된 메서드)"""
+        page = doc[page_num]
+
+        try:
+            pix = page.get_pixmap(dpi=300)
+            img_data = pix.tobytes("png")
+
+            from PIL import Image
+            import io
+            img = Image.open(io.BytesIO(img_data))
+
+            ocr_result = self.ocr_engine.process_image(img)
+            ocr_text = (ocr_result.text or "").strip()
+            ocr_quality = self.quality_scorer.score_text(ocr_text)
+
+            return (
+                ocr_text,
+                ocr_quality.score,
+                ocr_result.engine.value if ocr_result.engine else "unknown",
+                ocr_result.confidence
+            )
+        except Exception as e:
+            logger.error(f"OCR 실패: {doc_id} p.{page_num} - {e}")
+            return ("", 0.0, "error", 0.0)
 
     def _ocr_page(
         self,

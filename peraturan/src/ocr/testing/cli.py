@@ -188,7 +188,7 @@ def run(ctx, run_id, input, workers, dry_run):
     pipeline = OCRPipeline(
         input_dir=output_dir / "pdfs_temp",  # Dummy, we process individual files
         output_dir=run_dir / "output",
-        use_gpu=False,  # CPU for testing
+        use_gpu=True,  # Use GPU for OCR
     )
 
     # Process samples
