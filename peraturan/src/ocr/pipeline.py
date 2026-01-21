@@ -173,7 +173,39 @@ class CheckpointManager:
                 ocr_quality REAL DEFAULT 0,
                 similarity REAL DEFAULT 0,
                 text_source TEXT DEFAULT '',
+                raw_text TEXT DEFAULT '',
                 PRIMARY KEY (doc_id, page_num)
+            )
+        """)
+
+        # 구조화된 문서 테이블 (Phase 2: 구조화 후 저장)
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS structured_documents (
+                doc_id TEXT PRIMARY KEY,
+                doc_type TEXT,
+                doc_number TEXT,
+                doc_year INTEGER,
+                doc_title TEXT,
+                structured_json TEXT,
+                created_at TEXT,
+                updated_at TEXT,
+                FOREIGN KEY (doc_id) REFERENCES documents(doc_id)
+            )
+        """)
+
+        # 구조화된 섹션 테이블 (Bab, Pasal, Ayat 등)
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS structured_sections (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                doc_id TEXT,
+                section_type TEXT,
+                section_number TEXT,
+                parent_id INTEGER,
+                content TEXT,
+                sequence_order INTEGER,
+                created_at TEXT,
+                FOREIGN KEY (doc_id) REFERENCES documents(doc_id),
+                FOREIGN KEY (parent_id) REFERENCES structured_sections(id)
             )
         """)
 
@@ -205,15 +237,15 @@ class CheckpointManager:
         conn.close()
 
     def save_page(self, doc_id: str, page: PageResult):
-        """페이지 상태 저장"""
+        """페이지 상태 및 텍스트 저장"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
         cursor.execute("""
             INSERT OR REPLACE INTO pages
             (doc_id, page_num, status, strategy, quality_score, ocr_engine, ocr_confidence,
-             retry_count, error_message, processed_at, embedded_quality, ocr_quality, similarity, text_source)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+             retry_count, error_message, processed_at, embedded_quality, ocr_quality, similarity, text_source, raw_text)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             doc_id,
             page.page_num,
@@ -229,6 +261,7 @@ class CheckpointManager:
             page.ocr_quality,
             page.similarity,
             page.text_source,
+            page.text,  # raw_text 저장
         ))
 
         conn.commit()
@@ -278,6 +311,129 @@ class CheckpointManager:
             "documents": doc_stats,
             "pages": page_stats,
         }
+
+    def get_page_text(self, doc_id: str, page_num: int) -> Optional[str]:
+        """특정 페이지 텍스트 조회"""
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+
+        cursor.execute(
+            "SELECT raw_text FROM pages WHERE doc_id = ? AND page_num = ?",
+            (doc_id, page_num)
+        )
+        row = cursor.fetchone()
+        conn.close()
+
+        return row[0] if row else None
+
+    def get_document_text(self, doc_id: str) -> str:
+        """문서 전체 텍스트 조회 (페이지 순서대로)"""
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT raw_text FROM pages
+            WHERE doc_id = ? AND raw_text IS NOT NULL AND raw_text != ''
+            ORDER BY page_num
+        """, (doc_id,))
+
+        texts = [row[0] for row in cursor.fetchall()]
+        conn.close()
+
+        return "\n\n--- PAGE BREAK ---\n\n".join(texts)
+
+    def get_all_documents(self) -> List[dict]:
+        """모든 문서 목록 조회"""
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT doc_id, pdf_path, status, total_pages, tier, started_at, completed_at
+            FROM documents ORDER BY started_at DESC
+        """)
+
+        columns = ['doc_id', 'pdf_path', 'status', 'total_pages', 'tier', 'started_at', 'completed_at']
+        documents = [dict(zip(columns, row)) for row in cursor.fetchall()]
+        conn.close()
+
+        return documents
+
+    def save_structured_document(self, doc_id: str, doc_type: str, doc_number: str,
+                                  doc_year: int, doc_title: str, structured_json: str):
+        """구조화된 문서 저장"""
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+
+        now = datetime.now().isoformat()
+        cursor.execute("""
+            INSERT OR REPLACE INTO structured_documents
+            (doc_id, doc_type, doc_number, doc_year, doc_title, structured_json, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        """, (doc_id, doc_type, doc_number, doc_year, doc_title, structured_json, now, now))
+
+        conn.commit()
+        conn.close()
+
+    def save_structured_section(self, doc_id: str, section_type: str, section_number: str,
+                                 parent_id: Optional[int], content: str, sequence_order: int) -> int:
+        """구조화된 섹션 저장 (Bab, Pasal, Ayat 등)"""
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+
+        now = datetime.now().isoformat()
+        cursor.execute("""
+            INSERT INTO structured_sections
+            (doc_id, section_type, section_number, parent_id, content, sequence_order, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, (doc_id, section_type, section_number, parent_id, content, sequence_order, now))
+
+        section_id = cursor.lastrowid
+        conn.commit()
+        conn.close()
+
+        return section_id
+
+    def get_structured_document(self, doc_id: str) -> Optional[dict]:
+        """구조화된 문서 조회"""
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT doc_id, doc_type, doc_number, doc_year, doc_title, structured_json
+            FROM structured_documents WHERE doc_id = ?
+        """, (doc_id,))
+
+        row = cursor.fetchone()
+        conn.close()
+
+        if row:
+            return {
+                'doc_id': row[0],
+                'doc_type': row[1],
+                'doc_number': row[2],
+                'doc_year': row[3],
+                'doc_title': row[4],
+                'structured_json': row[5],
+            }
+        return None
+
+    def get_structured_sections(self, doc_id: str) -> List[dict]:
+        """문서의 모든 구조화된 섹션 조회"""
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT id, section_type, section_number, parent_id, content, sequence_order
+            FROM structured_sections
+            WHERE doc_id = ?
+            ORDER BY sequence_order
+        """, (doc_id,))
+
+        columns = ['id', 'section_type', 'section_number', 'parent_id', 'content', 'sequence_order']
+        sections = [dict(zip(columns, row)) for row in cursor.fetchall()]
+        conn.close()
+
+        return sections
 
 
 class OCRPipeline:
@@ -776,17 +932,19 @@ class OCRPipeline:
             processed_at=datetime.now().isoformat(),
         )
 
-    def run(self, limit: Optional[int] = None) -> dict:
+    def run(self, limit: Optional[int] = None, parallel: bool = True) -> dict:
         """
-        파이프라인 실행
+        파이프라인 실행 (v2.2: 병렬 처리 지원)
 
         Args:
             limit: 처리할 최대 문서 수 (테스트용)
+            parallel: 병렬 처리 여부 (기본: True)
 
         Returns:
             실행 결과 통계
         """
-        logger.info("=== OCR 파이프라인 시작 ===")
+        logger.info("=== OCR 파이프라인 시작 (v2.2) ===")
+        logger.info(f"  병렬 처리: {parallel} (워커: {self.num_workers})")
 
         pdfs = list(self.scan_pdfs())
         if limit:
@@ -802,27 +960,293 @@ class OCRPipeline:
             "skipped": 0,
         }
 
-        with Progress() as progress:
-            task = progress.add_task("[green]Processing...", total=len(pdfs))
-
-            for pdf_path in pdfs:
-                result = self.process_document(pdf_path)
-
-                if result is None:
-                    results["skipped"] += 1
-                elif result.status == DocumentStatus.COMPLETED:
-                    results["completed"] += 1
-                elif result.status == DocumentStatus.PARTIAL:
-                    results["partial"] += 1
-                else:
-                    results["failed"] += 1
-
-                progress.update(task, advance=1)
+        if parallel and self.num_workers > 1:
+            # 병렬 처리 (GPU 활용도 향상)
+            results = self._run_parallel(pdfs, results)
+        else:
+            # 순차 처리
+            results = self._run_sequential(pdfs, results)
 
         # 최종 통계 출력
         self._print_summary(results)
 
         return results
+
+    def _run_sequential(self, pdfs: List[Path], results: dict) -> dict:
+        """순차 처리 (기존 방식)"""
+        with Progress() as progress:
+            task = progress.add_task("[green]Processing...", total=len(pdfs))
+
+            for pdf_path in pdfs:
+                result = self.process_document(pdf_path)
+                self._update_results(result, results)
+                progress.update(task, advance=1)
+
+        return results
+
+    def _run_parallel(self, pdfs: List[Path], results: dict) -> dict:
+        """
+        병렬 처리 (GPU 활용도 향상)
+
+        전략: 이미지 프리로딩 + 연속 OCR 처리
+        - I/O 병렬화: ThreadPoolExecutor로 이미지 로딩
+        - GPU 활용: 이미지가 준비되는 대로 연속 처리
+        """
+        from queue import Queue
+        import threading
+
+        # 이미지 큐 (프리로딩용)
+        image_queue = Queue(maxsize=self.num_workers * 2)
+        results_lock = threading.Lock()
+        stop_event = threading.Event()
+
+        def preload_documents():
+            """PDF → 이미지 변환 (백그라운드)"""
+            for pdf_path in pdfs:
+                if stop_event.is_set():
+                    break
+                try:
+                    doc_id = self._generate_doc_id(pdf_path)
+
+                    # 이미 완료된 문서 스킵
+                    existing_status = self.checkpoint.get_document_status(doc_id)
+                    if existing_status == DocumentStatus.COMPLETED.value:
+                        image_queue.put((pdf_path, doc_id, None, "skip"))
+                        continue
+
+                    # PDF 열기 및 이미지 변환
+                    doc = fitz.open(pdf_path)
+                    pages_data = []
+
+                    for page_num in range(len(doc)):
+                        page = doc[page_num]
+                        embedded_text = page.get_text("text")
+
+                        # 이미지 변환
+                        pix = page.get_pixmap(dpi=300)
+                        img_data = pix.tobytes("png")
+
+                        from PIL import Image
+                        img = Image.open(io.BytesIO(img_data))
+                        img_array = np.array(img)
+
+                        pages_data.append({
+                            "page_num": page_num,
+                            "embedded_text": embedded_text,
+                            "image": img_array,
+                        })
+
+                    doc.close()
+                    image_queue.put((pdf_path, doc_id, pages_data, "ready"))
+
+                except Exception as e:
+                    logger.error(f"프리로딩 실패: {pdf_path} - {e}")
+                    image_queue.put((pdf_path, None, None, "error"))
+
+            # 종료 신호
+            image_queue.put((None, None, None, "done"))
+
+        # 프리로딩 스레드 시작
+        preload_thread = threading.Thread(target=preload_documents)
+        preload_thread.start()
+
+        with Progress() as progress:
+            task = progress.add_task("[green]Processing (prefetch)...", total=len(pdfs))
+
+            while True:
+                item = image_queue.get()
+                pdf_path, doc_id, pages_data, status = item
+
+                if status == "done":
+                    break
+
+                if status == "skip":
+                    with results_lock:
+                        results["skipped"] += 1
+                    progress.update(task, advance=1)
+                    continue
+
+                if status == "error":
+                    with results_lock:
+                        results["failed"] += 1
+                    progress.update(task, advance=1)
+                    continue
+
+                # OCR 처리 (GPU)
+                try:
+                    result = self._process_preloaded_document(pdf_path, doc_id, pages_data)
+                    with results_lock:
+                        self._update_results(result, results)
+                except Exception as e:
+                    logger.error(f"처리 실패: {pdf_path} - {e}")
+                    with results_lock:
+                        results["failed"] += 1
+
+                progress.update(task, advance=1)
+
+        stop_event.set()
+        preload_thread.join()
+
+        return results
+
+    def _process_preloaded_document(
+        self,
+        pdf_path: Path,
+        doc_id: str,
+        pages_data: List[dict],
+    ) -> DocumentResult:
+        """프리로딩된 문서 처리 (OCR만 수행)"""
+
+        result = DocumentResult(
+            doc_id=doc_id,
+            pdf_path=str(pdf_path),
+            status=DocumentStatus.PROCESSING,
+            total_pages=len(pages_data),
+            tier=self.get_document_tier(pdf_path),
+            started_at=datetime.now().isoformat(),
+        )
+        self.checkpoint.save_document(result)
+
+        all_text = []
+        manual_review_pages = []
+
+        for page_data in pages_data:
+            page_num = page_data["page_num"]
+            embedded_text = page_data["embedded_text"]
+            img_array = page_data["image"]
+
+            # 페이지 처리
+            page_result = self._process_preloaded_page(
+                doc_id, page_num, embedded_text, img_array
+            )
+            page_result.retry_count = 1
+
+            result.pages.append(page_result)
+            self.checkpoint.save_page(doc_id, page_result)
+
+            if page_result.status == PageStatus.COMPLETED:
+                all_text.append(page_result.text)
+            elif page_result.status == PageStatus.MANUAL_REVIEW:
+                manual_review_pages.append(page_num)
+                all_text.append(page_result.text)
+
+        # 문서 완료 상태 결정
+        completed = sum(1 for p in result.pages if p.status == PageStatus.COMPLETED)
+        manual_review = sum(1 for p in result.pages if p.status == PageStatus.MANUAL_REVIEW)
+        failed = sum(1 for p in result.pages if p.status == PageStatus.FAILED)
+
+        if failed == 0 and manual_review == 0:
+            result.status = DocumentStatus.COMPLETED
+        elif failed == 0 and manual_review > 0:
+            result.status = DocumentStatus.PARTIAL
+        elif completed > 0 or manual_review > 0:
+            result.status = DocumentStatus.PARTIAL
+        else:
+            result.status = DocumentStatus.FAILED
+
+        result.manual_review_pages = manual_review_pages
+        result.completed_at = datetime.now().isoformat()
+        self.checkpoint.save_document(result)
+
+        # 텍스트 저장
+        if all_text:
+            text_path = self.output_dir / "text" / f"{doc_id}.txt"
+            with open(text_path, 'w', encoding='utf-8') as f:
+                f.write("\n\n--- PAGE BREAK ---\n\n".join(all_text))
+
+        logger.info(f"문서 처리 완료: {doc_id} - {result.status.value}")
+        return result
+
+    def _process_preloaded_page(
+        self,
+        doc_id: str,
+        page_num: int,
+        embedded_text: str,
+        img_array: np.ndarray,
+    ) -> PageResult:
+        """프리로딩된 페이지 처리 (비교 로직 포함)"""
+
+        # 내장 텍스트 품질
+        embedded_quality = self.quality_scorer.score_text(embedded_text)
+
+        # 빈 페이지 처리
+        if embedded_quality.strategy == ProcessingStrategy.SKIP:
+            return PageResult(
+                page_num=page_num,
+                status=PageStatus.COMPLETED,
+                strategy=ProcessingStrategy.SKIP,
+                quality_score=0.0,
+                text="",
+                text_source="skip",
+                embedded_quality=0.0,
+                ocr_quality=0.0,
+                similarity=1.0,
+                processed_at=datetime.now().isoformat(),
+            )
+
+        # OCR 실행 (GPU)
+        ocr_result = self.ocr_engine.process_image(img_array)
+        ocr_text = (ocr_result.text or "").strip()
+        ocr_quality = self.quality_scorer.score_text(ocr_text)
+
+        # 유사도 계산
+        similarity = self._calculate_similarity(embedded_text, ocr_text)
+
+        # 소스 결정
+        SIMILARITY_HIGH = 0.90
+        SIMILARITY_LOW = 0.70
+
+        if similarity >= SIMILARITY_HIGH:
+            final_text = embedded_text
+            text_source = "embedded"
+            final_quality = embedded_quality.score
+            strategy = ProcessingStrategy.TEXT
+            status = PageStatus.COMPLETED
+        elif similarity >= SIMILARITY_LOW:
+            if embedded_quality.score >= ocr_quality.score:
+                final_text = embedded_text
+                text_source = "embedded"
+                final_quality = embedded_quality.score
+                strategy = ProcessingStrategy.TEXT
+            else:
+                final_text = ocr_text
+                text_source = "ocr"
+                final_quality = ocr_quality.score
+                strategy = ProcessingStrategy.OCR
+            status = PageStatus.COMPLETED
+        else:
+            final_text = ocr_text if ocr_quality.score > embedded_quality.score else embedded_text
+            text_source = "ocr" if ocr_quality.score > embedded_quality.score else "embedded"
+            final_quality = max(ocr_quality.score, embedded_quality.score)
+            strategy = ProcessingStrategy.HYBRID
+            status = PageStatus.MANUAL_REVIEW
+            logger.warning(f"수동검토 필요 (유사도 {similarity:.1%}): {doc_id} p.{page_num}")
+
+        return PageResult(
+            page_num=page_num,
+            status=status,
+            strategy=strategy,
+            quality_score=final_quality,
+            text=final_text,
+            ocr_engine=ocr_result.engine.value if ocr_result.engine else "unknown",
+            ocr_confidence=ocr_result.confidence,
+            text_source=text_source,
+            embedded_quality=embedded_quality.score,
+            ocr_quality=ocr_quality.score,
+            similarity=similarity,
+            processed_at=datetime.now().isoformat(),
+        )
+
+    def _update_results(self, result: Optional[DocumentResult], results: dict):
+        """결과 통계 업데이트"""
+        if result is None:
+            results["skipped"] += 1
+        elif result.status == DocumentStatus.COMPLETED:
+            results["completed"] += 1
+        elif result.status == DocumentStatus.PARTIAL:
+            results["partial"] += 1
+        else:
+            results["failed"] += 1
 
     def _print_summary(self, results: dict):
         """결과 요약 출력"""
@@ -857,14 +1281,17 @@ if __name__ == "__main__":
     @click.option('--output', '-o', required=True, help='결과 출력 디렉토리')
     @click.option('--gpu/--no-gpu', default=True, help='GPU 사용 여부')
     @click.option('--limit', '-l', default=None, type=int, help='처리할 최대 문서 수')
-    def run(input, output, gpu, limit):
-        """파이프라인 실행"""
+    @click.option('--workers', '-w', default=4, type=int, help='병렬 워커 수 (GPU 활용도)')
+    @click.option('--sequential', '-s', is_flag=True, help='순차 처리 (병렬 비활성화)')
+    def run(input, output, gpu, limit, workers, sequential):
+        """파이프라인 실행 (v2.2: 병렬 처리)"""
         pipeline = OCRPipeline(
             input_dir=input,
             output_dir=output,
             use_gpu=gpu,
+            num_workers=workers,
         )
-        pipeline.run(limit=limit)
+        pipeline.run(limit=limit, parallel=not sequential)
 
     @cli.command()
     @click.option('--checkpoint', '-c', required=True, help='체크포인트 디렉토리')
