@@ -1,0 +1,32 @@
+{
+  "total_docs": 2,
+  "passed": 2,
+  "failed": 0,
+  "skipped": 0,
+  "errors": 0,
+  "cer_threshold": 0.001,
+  "documents": [
+    {
+      "slug": "--no-1-tahun-2025",
+      "pdf_path": "/home/claude_user/workspace/cor/peraturan/data/pdfs/other/--no-1-tahun-2025.pdf",
+      "total_pages": 15,
+      "pages_checked": 13,
+      "pages_failed": 0,
+      "max_cer": 0.0,
+      "avg_cer": 0.0,
+      "status": "pass",
+      "reason": null
+    },
+    {
+      "slug": "-no-1-tahun-2025",
+      "pdf_path": "/home/claude_user/workspace/cor/peraturan/data/pdfs/permen/-no-1-tahun-2025.pdf",
+      "total_pages": 133,
+      "pages_checked": 60,
+      "pages_failed": 0,
+      "max_cer": 0.0,
+      "avg_cer": 0.0,
+      "status": "pass",
+      "reason": null
+    }
+  ]
+}

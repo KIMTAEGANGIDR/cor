@@ -1,0 +1,4637 @@
+{
+  "total": 772,
+  "candidates": [
+    {
+      "path": "cor/peraturan/data/pdfs/inpres/inpres-no-12-tahun-1998.pdf",
+      "type": "inpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/inpres/inpres-no-12-tahun-2011.pdf",
+      "type": "inpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/inpres/inpres-no-13-tahun-1998.pdf",
+      "type": "inpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/inpres/inpres-no-17-tahun-2011.pdf",
+      "type": "inpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/inpres/inpres-no-2-tahun-2013.pdf",
+      "type": "inpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/inpres/inpres-no-5-tahun-2013.pdf",
+      "type": "inpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/inpres/inpres-no-6-tahun-1999.pdf",
+      "type": "inpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/inpres/inpres-no-8-tahun-1998.pdf",
+      "type": "inpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/inpres/inpres-no-8-tahun-2013.pdf",
+      "type": "inpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-1-tahun-2013.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-10-tahun-2014.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-11-tahun-2011.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-11-tahun-2013.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-11-tahun-2015.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-12-tahun-2015.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-126-tahun-1953.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-127-tahun-1953.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-129-tahun-1953.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-13-tahun-2014.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-13-tahun-2022.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-132-tahun-1953.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-133-tahun-1953.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-134-tahun-1953.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-136-tahun-1953.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-139-tahun-1953.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-14-tahun-2012.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-14-tahun-2013.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-15-tahun-2014.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-16-tahun-2015.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-18-tahun-2013.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-18-tahun-2015.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-188-m-tahun-2004.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-19-tahun-2013.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-2-tahun-2020.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-20-tahun-2013.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-21-tahun-2013.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-21-tahun-2015.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-22-tahun-2012.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-22-tahun-2015.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-24-tahun-2018.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-25-tahun-2013.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-258-tahun-1968.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-26-tahun-2014.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-27-tahun-2012.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-28-tahun-2018.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-29-tahun-2013.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-30-tahun-2014.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-31-tahun-2013.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-31-tahun-2019.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-34-tahun-2012.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-35-tahun-2011.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-35-tahun-2014.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-38-tahun-2014.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-4-tahun-2015.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-45-tahun-1995.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-47-tahun-1953.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-49-tahun-1953.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-5-tahun-2013.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-50-tahun-1953.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-50-tahun-2014.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-51-tahun-1953.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-52-tahun-1953.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-52-tahun-2014.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-54-tahun-1953.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-55-tahun-1953.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-56-tahun-1953.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-58-tahun-1953.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-62-tahun-1953.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-63-tahun-1953.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-64-tahun-1953.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-65-tahun-1953.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-67-tahun-1953.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-68-tahun-1953.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-7-tahun-2014.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-70-tahun-1953.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-8-tahun-2014.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-9-tahun-2013.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-9-tahun-2014.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-9-tahun-2020.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/-no-1-tahun-2022.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/Peraturan-bpom-no-8-tahun-2023.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/Peraturan-bsn-no-1-tahun-2023.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/Peraturan-bsn-no-2-tahun-2023.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/Peraturan-bsn-no-4-tahun-2023.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-anri-no-14-tahun-2018.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-anri-no-15-tahun-2018.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-anri-no-35-tahun-2015.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bapanas-no-24-tahun-2023.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bapeten-no-3-tahun-2019.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bapeten-no-3-tahun-2021.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-barekraf-no-10-tahun-2018.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-batan-no-1-tahun-2020.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-batan-no-11-tahun-2015.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bawaslu-no-13-tahun-2020.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bawaslu-no-17-tahun-2017.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-big-no-10-tahun-2015.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-big-no-7-tahun-2021.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bin-no-02-tahun-2022.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bkkbn-no-10-tahun-2019.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bkkbn-no-19-tahun-2018.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bkkbn-no-3-tahun-2021.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bkn-no-10-tahun-2014.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bkn-no-13-tahun-2017.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bkn-no-14-tahun-2014.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bkn-no-14-tahun-2017.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bkn-no-15-tahun-2017.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bkn-no-16-tahun-2017.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bkn-no-17-tahun-2018.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bkn-no-20-tahun-2017.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bkn-no-20-tahun-2018.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bkn-no-21-tahun-2018.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bkn-no-22-tahun-2017.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bkn-no-22-tahun-2018.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bkn-no-23-tahun-2018.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bkn-no-24-tahun-2018.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bkn-no-5-tahun-2021.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bkn-no-6-tahun-2018.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bkn-no-8-tahun-2017.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bkpm-no-1-tahun-2017.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bkpm-no-1-tahun-2018.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bkpm-no-11-tahun-2015.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bkpm-no-2-tahun-2020.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bmkg-no-4-tahun-2020.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bnn-no-1-tahun-2018.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bnn-no-3-tahun-2016.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bnn-no-3-tahun-2021.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bnn-no-9-tahun-2018.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bnp2-no-1-tahun-2018.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bnp2-no-1-tahun-2021.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bnp2-no-11-tahun-2018.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bnpb-no-2-tahun-2009.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bnpb-no-26-tahun-2010.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bnpb-no-5-tahun-2016.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bnpb-no-7-tahun-2020.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bnpp-no-2-tahun-2015.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bnpp-no-3-tahun-2023.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bnpp-no-4-tahun-2021.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bnpp-no-7-tahun-2017.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bnpt-no-1-tahun-2017.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bnpt-no-1-tahun-2020.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bnpt-no-4-tahun-2021.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bnpt-no-5-tahun-2017.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bpip-no-1-tahun-2020.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bpk-no-3-tahun-2020.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bpkp-no-10-tahun-2015.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bpkp-no-13-tahun-2015.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bpkp-no-17-tahun-2017.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bpkp-no-19-tahun-2014.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bpkp-no-2-tahun-2015.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bpkp-no-2-tahun-2020.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bpkp-no-23-tahun-2014.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bpkp-no-3-tahun-2019.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bpkp-no-4-tahun-2016.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bpkp-no-4-tahun-2023.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bpkp-no-5-tahun-2021.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bpkp-no-6-tahun-2016.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bpkp-no-6-tahun-2018.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bpkp-no-9-tahun-2015.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bpom-no-1-tahun-2019.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bpom-no-10-tahun-2020.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bpom-no-10-tahun-2021.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bpom-no-10-tahun-2022.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bpom-no-13-tahun-2018.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bpom-no-15-tahun-2017.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bpom-no-15-tahun-2023.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bpom-no-17-tahun-2022.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bpom-no-18-tahun-2017.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bpom-no-21-tahun-2016.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bpom-no-21-tahun-2018.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bpom-no-23-tahun-2019.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bpom-no-34-tahun-2018.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bpom-no-34-tahun-2019.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bpom-no-5-tahun-2019.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bpom-no-6-tahun-2020.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bpom-no-6-tahun-2022.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bpom-no-9-tahun-2020.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bpom-no-hk-03-1-23-08-11-07517-tahun-2011.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bppmi-no-05-tahun-2020.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bppmi-no-08-tahun-2020.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bppt-no-8-tahun-2018.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-brin-no-6-tahun-2023.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bsn-no-1-tahun-2019.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bsn-no-1-tahun-2021.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bsn-no-10-tahun-2019.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bsn-no-12-tahun-2020.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bsn-no-14-tahun-2019.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bsn-no-2-tahun-2020.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bsn-no-24-tahun-2019.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bsn-no-3-tahun-2018.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bsn-no-4-tahun-2016.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bsn-no-4-tahun-2022.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bsn-no-5-tahun-2022.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bsn-no-5-tahun-2023.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bsn-no-6-tahun-2015.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bsn-no-6-tahun-2019.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bsn-no-7-tahun-2017.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bsn-no-7-tahun-2023.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bsn-no-9-tahun-2020.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bssn-no-10-tahun-2021.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bssn-no-5-tahun-2020.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bssn-no-9-tahun-2019.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-denaskek-no-2-tahun-2021.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-kejakgung-no-001-a-ja-01-2017-tahun-2017.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-kejakgung-no-12-tahun-2020.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-kejakgung-no-2-tahun-2023.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-kejakgung-no-4-tahun-2021.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-kejakgung-no-4-tahun-2023.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-kejakgung-no-7-tahun-2021.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-kejakgung-no-8-tahun-2019.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-kejakgung-no-per-001-a-ja-01-2018-tahun-2018.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-kki-no-105-tahun-2021.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-kki-no-106-tahun-2022.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-kki-no-107-tahun-2022.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-kki-no-109-tahun-2022.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-kki-no-40-tahun-2016.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-kki-no-44-tahun-2016.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-kki-no-45-tahun-2016.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-kki-no-48-tahun-2017.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-kki-no-55-tahun-2018.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-kki-no-57-tahun-2018.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-kki-no-60-tahun-2019.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-kki-no-61-tahun-2019.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-kki-no-64-tahun-2019.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-kki-no-65-tahun-2019.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-kki-no-67-tahun-2020.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-kki-no-68-tahun-2020.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-kki-no-69-tahun-2020.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-kki-no-73-tahun-2020.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-kki-no-75-tahun-2020.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-kki-no-78-tahun-2020.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-komnasham-no-005-per-komnasham-ix-2014-tahun-2014.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-kpu-no-17-tahun-2015.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-lan-no-12-tahun-2020.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-lan-no-14-tahun-2017.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-lan-no-21-tahun-2016.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-lan-no-8-tahun-2017.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-lapan-no-7-tahun-2019.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-lapan-no-8-tahun-2020.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-lipi-no-13-tahun-2016.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-lipi-no-17-tahun-2016.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-lipi-no-5-tahun-2014.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-lkpp-no-1-tahun-2018.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-lkpp-no-1-tahun-2023.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-lkpp-no-12-tahun-2020.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-lkpp-no-12-tahun-2021.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-lkpp-no-14-tahun-2012.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-lkpp-no-17-tahun-2019.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-lkpp-no-19-tahun-2015.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-lkpp-no-22-tahun-2016.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-lkpp-no-3-tahun-2023.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-lkpp-no-4-tahun-2023.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-lsn-no-8-tahun-2017.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-ori-no-44-tahun-2020.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/perda-kota-bandung-no-3-tahun-2024.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/perka-bps-no-1-tahun-2020.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/perka-bps-no-1-tahun-2021.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/perka-bps-no-19-tahun-2017.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/perka-bps-no-2-tahun-2020.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/perka-bps-no-3-tahun-2020.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/perka-bps-no-4-tahun-2021.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/perka-bps-no-5-tahun-2019.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/perka-bps-no-5-tahun-2021.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/perka-bps-no-55-tahun-2017.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/perka-bps-no-66-tahun-2016.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/perka-bps-no-90-tahun-2015.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/perka-bps-no-90-tahun-2018.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/perka-bps-no-95-tahun-2015.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/perpusnas-no-15-tahun-2016.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/perpusnas-no-24-tahun-2017.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/peraturan-basarnas-no-23-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/peraturan-basarnas-no-pk-1-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/peraturan-batan-no-231-ka-xii-2012-tahun-2013.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/peraturan-bpom-no-6-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/peraturan-bsn-no-5-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-atrbpn-no-13-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-atrbpn-no-27-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-atrbpn-no-29-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-atrbpn-no-4-tahun-2023.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-atrbpn-no-9-tahun-2018.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-bumn-no-per-04-mbu-07-2019-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-bumn-no-per-07-mbu-10-2019-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-bumn-no-per-15-mbu-10-2014-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-esdm-no-16-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-esdm-no-18-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-esdm-no-2-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-esdm-no-2-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-esdm-no-23-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-esdm-no-27-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-esdm-no-34-tahun-2015.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-esdm-no-38-tahun-2015.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-esdm-no-42-tahun-2015.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-esdm-no-43-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-esdm-no-45-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-esdm-no-5-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-esdm-no-9-tahun-2023.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-kkp-no-14-permen-kp-2018-tahun-2018.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-kkp-no-26-permen-kp-2019-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-kkp-no-27-permen-kp-2016-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-kkp-no-27-permen-kp-2019-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-kkp-no-3-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-kkp-no-30-permen-kp-2015-tahun-2015.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-kkp-no-31-permen-kp-2019-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-kkp-no-32-permen-kp-2019-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-kkp-no-37-permen-kp-2014-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-kkp-no-40-permen-kp-2015-tahun-2015.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-kkp-no-41-permen-kp-2016-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-kkp-no-44-permen-kp-2014-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-kkp-no-45-permen-kp-2016-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-kkp-no-6-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-kkp-no-63-permen-kp-2020-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-kkp-no-9-permen-kp-2015-tahun-2015.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-lhk-no-3-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-lhk-no-4-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-lhk-no-8-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-lhk-no-p-16-menlhk-setjen-set-1-8-2020-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-lhk-no-p-67-menlhk-setjen-kum-1-7-2016-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-lhk-no-p-71-menlhk-setjen-kum-1-10-2019-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-lhk-no-p-82-menlhk-setjen-set-1-11-2019-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-lhk-no-p-9-menlhk-setjen-kum-1-1-2017-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-pdt-no-4-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-ppn-bappenas-no-11-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-ppn-bappenas-no-11-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-ppn-bappenas-no-2-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-ppn-bappenas-no-2-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-ppn-bappenas-no-2-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-ppn-bappenas-no-4-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-ppn-bappenas-no-5-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-ppn-bappenas-no-9-tahun-2018.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-pppa-no-10-tahun-2015.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-pppa-no-10-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-pppa-no-2-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-pppa-no-2-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-pppa-no-3-tahun-2015.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-pppa-no-6-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-pppa-no-7-tahun-2018.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-pppa-no-8-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-pppa-no-8-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-pupr-no-1-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-pupr-no-14-prt-m-2015-tahun-2015.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-pupr-no-18-prt-m-2019-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-pupr-no-23-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-pupr-no-26-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-pupr-no-27-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-pupr-no-28-prt-m-2016-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-pupr-no-6-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-pupr-no-8-prt-m-2018-tahun-2018.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenag-no-13-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenag-no-14-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenag-no-15-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenag-no-18-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenag-no-29-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenag-no-70-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenaker-no-12-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenaker-no-12-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenaker-no-20-tahun-2018.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenaker-no-22-tahun-2018.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenaker-no-26-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenaker-no-3-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenaker-no-3-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenaker-no-4-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenaker-no-6-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenaker-no-6-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenakertrans-no-13-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendag-no-02-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendag-no-07-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendag-no-08-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendag-no-12-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendag-no-21-tahun-2023.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendag-no-25-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendag-no-26-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendag-no-3-tahun-2023.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendag-no-39-m-dag-per-7-2014-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendag-no-41-tahun-2018.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendag-no-44-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendag-no-46-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendag-no-52-m-dag-per-9-2013-tahun-2013.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendag-no-62-m-dag-per-8-2017-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendag-no-64-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendag-no-65-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendag-no-68-m-dag-per-10-2014-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendag-no-69-m-dag-per-10-2014-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendag-no-70-m-dag-per-10-2014-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendag-no-71-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendag-no-73-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendag-no-8-tahun-2024.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendag-no-81-m-dag-per-11-2016-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendag-no-85-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendag-no-89-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendag-no-91-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendagri-no-107-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendagri-no-137-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendagri-no-14-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendagri-no-15-tahun-2023.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendagri-no-16-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendagri-no-27-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendagri-no-31-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendagri-no-31-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendagri-no-33-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendagri-no-40-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendagri-no-40-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendagri-no-48-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendagri-no-56-tahun-2015.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendagri-no-64-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendagri-no-67-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendagri-no-69-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendagri-no-7-tahun-2018.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendagri-no-71-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendagri-no-72-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendagri-no-77-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendagri-no-84-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendagri-no-90-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendagri-no-96-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendesa-no-1-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendesa-no-2-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendesa-no-2-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendesa-no-24-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendesa-no-39-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendesa-no-5-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendesa-no-7-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendikbud-no-101-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendikbud-no-105-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendikbud-no-11-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendikbud-no-110-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendikbud-no-117-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendikbud-no-12-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendikbud-no-131-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendikbud-no-145-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendikbud-no-16-tahun-2018.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendikbud-no-161-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendikbud-no-22-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendikbud-no-26-tahun-2015.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendikbud-no-26-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendikbud-no-27-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendikbud-no-33-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendikbud-no-34-tahun-2018.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendikbud-no-36-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendikbud-no-37-tahun-2018.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendikbud-no-47-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendikbud-no-5-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendikbud-no-56-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendikbud-no-66-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendikbud-no-73-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendikbud-no-8-tahun-2018.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendikbud-no-80-tahun-2015.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendikbud-no-9-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendikbudristek-no-13-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendikbudristek-no-3-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenhan-no-10-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenhan-no-11-tahun-2018.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenhan-no-30-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenhan-no-30-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenhan-no-4-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenhan-no-46-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenhan-no-47-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenhan-no-48-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenhan-no-51-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenhan-no-65-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenhub-no-102-tahun-2015.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenhub-no-99-tahun-2015.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenhub-no-pm-11-tahun-2023.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenhub-no-pm-28-tahun-2023.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenhub-no-pm-38-tahun-2023.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenhub-no-pm-54-tahun-2015.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenhub-no-pm-62-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenhub-no-pm102-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenhub-no-pm169-tahun-2015.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenhub-no-pm22-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenhub-no-pm23-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenhub-no-pm36-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenhub-no-pm44-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenhub-no-pm56-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenhub-no-pm62-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenhut-no-p-32-menhut-ii-2014-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenhut-no-p-59-menhut-ii-2009-tahun-2009.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenhut-no-p-77-menhut-ii-2014-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkes-no-13-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkes-no-14-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkes-no-14-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkes-no-18-tahun-2018.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkes-no-21-tahun-2018.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkes-no-21-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkes-no-25-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkes-no-28-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkes-no-39-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkes-no-4-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkes-no-4-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkes-no-40-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkes-no-44-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkes-no-47-tahun-2015.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkes-no-50-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkes-no-51-tahun-2015.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkes-no-52-tahun-2015.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkes-no-52-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkes-no-59-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkes-no-6-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkes-no-66-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkes-no-70-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkes-no-79-tahun-2015.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-10-pmk-03-2015-2015-tahun-2015.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-105-pmk-010-2019-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-105-pmk-05-2015-tahun-2015.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-106-pmk-05-2016-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-108-pmk-02-2022-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-113-tahun-2023.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-119-pmk-02-2020-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-120-pmk-02-2011-tahun-2011.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-123-pmk-02-2021-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-127-pmk-02-2019-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-127-pmk-07-2022-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-129-pmk-02-2022-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-129-pmk-07-2021-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-133-pmk-02-2014-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-136-pmk-02-2014-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-142-pmk-02-2018-tahun-2018.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-146-pmk-05-2015-tahun-2015.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-152-pmk-010-2021-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-152-pmk-02-2020-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-157-pmk-05-2014-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-166-pmk-11-2011-tahun-2011.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-169-pmk-02-2014-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-169-pmk-05-2018-tahun-2018.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-18-pmk-010-2018-tahun-2018.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-181-pmk-01-2014-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-181-pmk-06-2016-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-182-pmk-06-2021-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-188-pmk-01-2014-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-190-pmk-05-2014-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-191-pmk-03-2014-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-196-pmk-02-2015-tahun-2015.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-210-pmk-02-2021-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-212-pmk-05-2015-tahun-2015.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-215-pmk-07-2022-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-217-pmk-02-2017-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-218-pmk-07-2022-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-22-pmk-05-2022-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-221-pmk-010-2022-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-222-pmk-010-2022-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-222-pmk-05-2016-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-223-pmk-010-2022-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-224-pmk-010-2022-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-225-pmk-010-2022-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-225-pmk-05-2019-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-227-pmk-010-2022-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-228-pmk-03-2017-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-231-pmk-05-2022-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-24-pmk-010-2017-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-25-pmk-010-2017-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-255-pmk-09-2015-tahun-2015.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-26-pmk-010-2017-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-26-pmk-010-2022-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-27-pmk-010-2017-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-273-pmk-010-2015-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-275-pmk-05-2014-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-28-pmk-010-2017-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-31-tahun-2015.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-32-pmk-02-2018-tahun-2018.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-33-pmk-02-2016-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-37-pmk-02-2018-tahun-2018.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-39-pmk-03-2016-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-49-pmk-02-2017-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-49-tahun-2023.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-6-pmk-010-2017-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-60-pmk-02-2021-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-63-tahun-2023.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-72-tahun-2023.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-77-pmk-01-2020-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-83-pmk-02-2022-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-85-tahun-2023.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-93-pmk-07-2015-tahun-2015.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenklhbph-no-16-tahun-2025.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenko-maritim-no-6-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenko-marves-no-04-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenko-marves-no-4-tahun-2023.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenko-perekonomian-no-11-tahun-2015.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenko-perekonomian-no-13-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenko-perekonomian-no-6-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenko-pmk-no-1-tahun-2018.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenko-pmk-no-2-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenko-pmk-no-2-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenko-pmk-no-3-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenko-pmk-no-3-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenko-pmk-no-3-tahun-2023.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenko-pmk-no-4-tahun-2023.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenko-pmk-no-6-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenko-polhukam-no-11-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenko-polhukam-no-15-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenko-polhukam-no-16-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenko-polhukam-no-2-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenko-polhukam-no-2-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenko-polhukam-no-3-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenko-polhukam-no-5-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenko-polhukam-no-6-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkominfo-no-12-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkominfo-no-13-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkominfo-no-2-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkominfo-no-21-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkominfo-no-22-tahun-2015.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkominfo-no-25-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkominfo-no-32-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkominfo-no-37-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkominfo-no-5-tahun-2023.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkominfo-no-9-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkop-kukm-no-01-per-m-kukm-i-2018-tahun-2018.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkop-kukm-no-10-per-m-kukm-xii-2013-tahun-2013.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkop-kukm-no-5-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkumham-no-1-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkumham-no-11-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkumham-no-12-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkumham-no-14-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkumham-no-15-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkumham-no-16-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkumham-no-16-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkumham-no-18-tahun-2023.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkumham-no-31-tahun-2018.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkumham-no-31-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkumham-no-40-tahun-2018.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkumham-no-42-tahun-2018.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkumham-no-45-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkumham-no-64-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkumham-no-7-tahun-2024.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkumham-no-8-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkumham-no-m-01-hl-03-01-tahun-2006.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkumham-no-m-hh-06-gr-01-01-tahun-2009.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenlh-no-p-36-menlhk-setjen-kum-1-3-2016-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenlh-no-p-66-menlhk-setjen-2015-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenlu-no-4-tahun-2018.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenlu-no-5-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenlu-no-5-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenlu-no-7-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenpanrb-no-11-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenpanrb-no-21-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenpanrb-no-24-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenpanrb-no-25-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenpanrb-no-25-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenpanrb-no-26-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenpanrb-no-44-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenpanrb-no-53-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenpanrb-no-8-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenpar-no-1-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenpar-no-1-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenpar-no-13-tahun-2018.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenpar-no-9-tahun-2018.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenparekraf-no-12-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenparekraf-no-2-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenparekraf-no-3-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenparekraf-no-4-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenparekraf-no-9-tahun-2021.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenpera-no-19-prt-m-2015-tahun-2015.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenperin-no-15-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenperin-no-82-m-ind-per-10-2014-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenpora-no-1-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenpora-no-14-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenpora-no-15-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenpora-no-16-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenpora-no-3-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenpora-no-3-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenpora-no-30-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenpora-no-4-tahun-2024.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenpora-no-65-tahun-2015.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenpora-no-7-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenpora-no-8-tahun-2018.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenpora-no-8-tahun-2023.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenpu-no-10-prt-m-2014-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenristekdikti-no-22-tahun-2015.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenristekdikti-no-23-tahun-2018.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenristekdikti-no-37-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenristekdikti-no-39-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenristekdikti-no-39-tahun-2018.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenristekdikti-no-4-tahun-2018.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenristekdikti-no-61-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenristekdikti-no-69-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenristekdikti-no-89-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenristekdikti-no-94-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permensetneg-no-10-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permensos-no-14-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permensos-no-17-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permensos-no-20-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permensos-no-23-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permensos-no-5-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permensos-no-6-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permensos-no-9-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permentan-no-111-permentan-sr-120-9-2014-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permentan-no-119-permentan-ot-140-10-2014-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permentan-no-13-tahun-2022.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permentan-no-19-permentan-ot-040-5-2016-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permentan-no-21-permentan-ot-040-5-2016-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permentan-no-22-permentan-ot-040-5-2016-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permentan-no-23-permentan-ot-040-5-2016-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permentan-no-24-permentan-ot-040-5-2016-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permentan-no-30-permentan-ot-040-6-2016-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permentan-no-31-permentan-kr-010-7-2018-tahun-2018.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permentan-no-31-permentan-ot-040-6-2016-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permentan-no-33-tahun-2019.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permentan-no-41-permentan-ot-040-8-2016-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permentan-no-48-permentan-ot-140-4-2014-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permentan-no-51-permentan-kr-010-9-2015-tahun-2015.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permentan-no-53-permentan-ot-040-11-2016-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permentan-no-59-permentan-ku-100-12-2015-tahun-2015.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permentan-no-67-permentan-sm-050-12-2016-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/perpres/perpres-no-102-tahun-2022.pdf",
+      "type": "perpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/perpres/perpres-no-103-tahun-2022.pdf",
+      "type": "perpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/perpres/perpres-no-105-tahun-2021.pdf",
+      "type": "perpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/perpres/perpres-no-113-tahun-2020.pdf",
+      "type": "perpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/perpres/perpres-no-129-tahun-2018.pdf",
+      "type": "perpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/perpres/perpres-no-13-tahun-2016.pdf",
+      "type": "perpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/perpres/perpres-no-132-tahun-2015.pdf",
+      "type": "perpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/perpres/perpres-no-132-tahun-2018.pdf",
+      "type": "perpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/perpres/perpres-no-137-tahun-2015.pdf",
+      "type": "perpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/perpres/perpres-no-18-tahun-2008.pdf",
+      "type": "perpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/perpres/perpres-no-2-tahun-2018.pdf",
+      "type": "perpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/perpres/perpres-no-25-tahun-2021.pdf",
+      "type": "perpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/perpres/perpres-no-3-tahun-2004.pdf",
+      "type": "perpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/perpres/perpres-no-34-tahun-2022.pdf",
+      "type": "perpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/perpres/perpres-no-37-tahun-2011.pdf",
+      "type": "perpres",
+      "reason": "extract_error",
+      "error": "Failed to open file 'cor/peraturan/data/pdfs/perpres/perpres-no-37-tahun-2011.pdf'."
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/perpres/perpres-no-39-tahun-2020.pdf",
+      "type": "perpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/perpres/perpres-no-43-tahun-2016.pdf",
+      "type": "perpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/perpres/perpres-no-45-tahun-2016.pdf",
+      "type": "perpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/perpres/perpres-no-47-tahun-2013.pdf",
+      "type": "perpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/perpres/perpres-no-49-tahun-2021.pdf",
+      "type": "perpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/perpres/perpres-no-6-tahun-2016.pdf",
+      "type": "perpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/perpres/perpres-no-60-tahun-2015.pdf",
+      "type": "perpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/perpres/perpres-no-66-tahun-2016.pdf",
+      "type": "perpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/perpres/perpres-no-72-tahun-2018.pdf",
+      "type": "perpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/perpres/perpres-no-72-tahun-2020.pdf",
+      "type": "perpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/perpres/perpres-no-74-tahun-2022.pdf",
+      "type": "perpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/perpres/perpres-no-77-tahun-2019.pdf",
+      "type": "perpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/perpres/perpres-no-79-tahun-2017.pdf",
+      "type": "perpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/perpres/perpres-no-79-tahun-2019.pdf",
+      "type": "perpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/perpres/perpres-no-8-tahun-2018.pdf",
+      "type": "perpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/perpres/perpres-no-81-tahun-2022.pdf",
+      "type": "perpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/perpres/perpres-no-84-tahun-2021.pdf",
+      "type": "perpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/perpres/perpres-no-85-tahun-2021.pdf",
+      "type": "perpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/perpres/perpres-no-92-tahun-2017.pdf",
+      "type": "perpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/perpres/perpres-no-97-tahun-2016.pdf",
+      "type": "perpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/perpres/perpres-no-98-tahun-2015.pdf",
+      "type": "perpres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/pp/pp-no-11-tahun-2015.pdf",
+      "type": "pp",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/pp/pp-no-14-tahun-2015.pdf",
+      "type": "pp",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/pp/pp-no-15-tahun-2016.pdf",
+      "type": "pp",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/pp/pp-no-18-tahun-2019.pdf",
+      "type": "pp",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/pp/pp-no-21-tahun-2013.pdf",
+      "type": "pp",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/pp/pp-no-25-tahun-2013.pdf",
+      "type": "pp",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/pp/pp-no-25-tahun-2022.pdf",
+      "type": "pp",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/pp/pp-no-29-tahun-1972.pdf",
+      "type": "pp",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/pp/pp-no-32-tahun-2016.pdf",
+      "type": "pp",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/pp/pp-no-33-tahun-2015.pdf",
+      "type": "pp",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/pp/pp-no-34-tahun-2015.pdf",
+      "type": "pp",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/pp/pp-no-35-tahun-2015.pdf",
+      "type": "pp",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/pp/pp-no-35-tahun-2016.pdf",
+      "type": "pp",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/pp/pp-no-38-tahun-2012.pdf",
+      "type": "pp",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/pp/pp-no-4-tahun-1978.pdf",
+      "type": "pp",
+      "reason": "extract_error",
+      "error": "Failed to open file 'cor/peraturan/data/pdfs/pp/pp-no-4-tahun-1978.pdf'."
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/pp/pp-no-42-tahun-2010.pdf",
+      "type": "pp",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/pp/pp-no-43-tahun-1999.pdf",
+      "type": "pp",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/pp/pp-no-50-tahun-1999.pdf",
+      "type": "pp",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/pp/pp-no-51-tahun-2018.pdf",
+      "type": "pp",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/pp/pp-no-54-tahun-2021.pdf",
+      "type": "pp",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/pp/pp-no-6-tahun-2015.pdf",
+      "type": "pp",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/pp/pp-no-8-tahun-2015.pdf",
+      "type": "pp",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/uu/uu-no-1-tahun-1961.pdf",
+      "type": "uu",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/uu/uu-no-12-tahun-2015.pdf",
+      "type": "uu",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/uu/uu-no-12-tahun-2019.pdf",
+      "type": "uu",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/uu/uu-no-14-tahun-2022.pdf",
+      "type": "uu",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/uu/uu-no-15-tahun-2022.pdf",
+      "type": "uu",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/uu/uu-no-16-tahun-2022.pdf",
+      "type": "uu",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/uu/uu-no-17-tahun-2002.pdf",
+      "type": "uu",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/uu/uu-no-17-tahun-2022.pdf",
+      "type": "uu",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/uu/uu-no-18-tahun-2022.pdf",
+      "type": "uu",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/uu/uu-no-19-tahun-2022.pdf",
+      "type": "uu",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/uu/uu-no-20-tahun-2022.pdf",
+      "type": "uu",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/uu/uu-no-21-tahun-1997.pdf",
+      "type": "uu",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/uu/uu-no-21-tahun-2022.pdf",
+      "type": "uu",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/uu/uu-no-5-tahun-2020.pdf",
+      "type": "uu",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/uu/uu-no-6-tahun-1997.pdf",
+      "type": "uu",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    }
+  ]
+}

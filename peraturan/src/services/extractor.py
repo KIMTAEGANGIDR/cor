@@ -89,6 +89,7 @@ class TextExtractor:
     REPEAT_LINE_THRESHOLD = 0.6
     MIN_REPEAT_LINE_LEN = 4
     MAX_MARKER_SCAN_CHARS = 20000
+    QUALITY_OCR_THRESHOLD = 0.90  # Normalized (0.0-1.0) quality threshold for OCR
 
     # Body markers
     BODY_START_PATTERNS = [
@@ -304,6 +305,11 @@ class TextExtractor:
         if result.avg_chars_per_page < 80 and result.total_pages > 1:
             result.needs_ocr = True
         elif result.avg_chars_per_page < 200 and not markers["pasal"] and result.total_pages > 1:
+            result.needs_ocr = True
+
+        # OCR candidate if quality score is below threshold
+        # quality_score is 0-100, normalize to 0.0-1.0 for comparison
+        if (result.quality_score / 100.0) < self.QUALITY_OCR_THRESHOLD:
             result.needs_ocr = True
 
     def _extract_body(self, text: str) -> str:

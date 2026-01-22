@@ -84,3 +84,10 @@ dmypy.json
 # Logs
 *.log
 logs/
+.git_backup/
+
+# Large image files in reports
+docs/reports/**/images/
+docs/reports/**/*.png
+docs/reports/**/*.jpg
+docs/reports/verification_pages.jsonl

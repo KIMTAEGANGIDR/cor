@@ -1,0 +1,27 @@
+{
+  "total_scanned": 36037,
+  "candidates": 2227,
+  "candidate_ratio": 6.18,
+  "needs_ocr_candidates": 1455,
+  "low_quality_candidates": 1455,
+  "extract_errors": 772,
+  "quality_threshold": 90.0,
+  "candidate_quality_avg": 70.59,
+  "candidate_quality_min": 35.0,
+  "candidate_quality_max": 85.0,
+  "candidate_avg_chars_avg": 538.92,
+  "candidate_avg_chars_min": 0.0,
+  "candidate_avg_chars_max": 2381.5,
+  "candidate_repeat_ratio_avg": 0.203,
+  "candidate_repeat_ratio_min": 0.0,
+  "candidate_repeat_ratio_max": 1.0,
+  "candidate_type_counts": {
+    "permen": 1053,
+    "other": 461,
+    "keppres": 340,
+    "inpres": 204,
+    "perpres": 90,
+    "pp": 52,
+    "uu": 27
+  }
+}

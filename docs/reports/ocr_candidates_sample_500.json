@@ -1,0 +1,326 @@
+{
+  "total": 500,
+  "candidates": [
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-kkp-no-37-permen-kp-2014-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/perpusnas-no-26-tahun-2017.pdf",
+      "type": "other",
+      "pages": 32,
+      "avg_chars_per_page": 197.9,
+      "repeated_line_ratio": 0.239,
+      "quality_score": 70.0,
+      "quality_flags": [
+        "low_text_density"
+      ],
+      "needs_ocr": true
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-98-tahun-2023.pdf",
+      "type": "permen",
+      "pages": 268,
+      "avg_chars_per_page": 185.2,
+      "repeated_line_ratio": 0.293,
+      "quality_score": 70.0,
+      "quality_flags": [
+        "low_text_density"
+      ],
+      "needs_ocr": true
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-kkp-no-27-permen-kp-2016-tahun-2016.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/inpres/inpres-no-6-tahun-2001.pdf",
+      "type": "inpres",
+      "pages": 3,
+      "avg_chars_per_page": 981.7,
+      "repeated_line_ratio": 0.099,
+      "quality_score": 85.0,
+      "quality_flags": [
+        "missing_decision_marker"
+      ],
+      "needs_ocr": true
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenhub-no-pm35-tahun-2014.pdf",
+      "type": "permen",
+      "pages": 60,
+      "avg_chars_per_page": 195.2,
+      "repeated_line_ratio": 0.0,
+      "quality_score": 70.0,
+      "quality_flags": [
+        "low_text_density"
+      ],
+      "needs_ocr": true
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/uu/uu-no-19-tahun-2022.pdf",
+      "type": "uu",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/inpres/inpres-no-11-tahun-1981.pdf",
+      "type": "inpres",
+      "pages": 2,
+      "avg_chars_per_page": 1446.5,
+      "repeated_line_ratio": 0.143,
+      "quality_score": 85.0,
+      "quality_flags": [
+        "missing_decision_marker"
+      ],
+      "needs_ocr": true
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-188-m-tahun-2004.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-11-tahun-2011.pdf",
+      "type": "keppres",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bkn-no-15-tahun-2017.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenaker-no-10-tahun-2021.pdf",
+      "type": "permen",
+      "pages": 73,
+      "avg_chars_per_page": 111.8,
+      "repeated_line_ratio": 0.394,
+      "quality_score": 60.0,
+      "quality_flags": [
+        "low_text_density",
+        "high_repetition"
+      ],
+      "needs_ocr": true
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-anri-no-20-tahun-2017.pdf",
+      "type": "other",
+      "pages": 53,
+      "avg_chars_per_page": 160.1,
+      "repeated_line_ratio": 0.288,
+      "quality_score": 70.0,
+      "quality_flags": [
+        "low_text_density"
+      ],
+      "needs_ocr": true
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenaker-no-1-tahun-2018.pdf",
+      "type": "permen",
+      "pages": 153,
+      "avg_chars_per_page": 180.5,
+      "repeated_line_ratio": 0.136,
+      "quality_score": 70.0,
+      "quality_flags": [
+        "low_text_density"
+      ],
+      "needs_ocr": true
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendikbud-no-50-tahun-2016.pdf",
+      "type": "permen",
+      "pages": 24,
+      "avg_chars_per_page": 140.4,
+      "repeated_line_ratio": 0.294,
+      "quality_score": 70.0,
+      "quality_flags": [
+        "low_text_density"
+      ],
+      "needs_ocr": true
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-lhk-no-p-13-menlhk-setjen-kum-1-5-2018-tahun-2018.pdf",
+      "type": "permen",
+      "pages": 145,
+      "avg_chars_per_page": 195.3,
+      "repeated_line_ratio": 0.262,
+      "quality_score": 70.0,
+      "quality_flags": [
+        "low_text_density"
+      ],
+      "needs_ocr": true
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permen-lhk-no-1-tahun-2021.pdf",
+      "type": "permen",
+      "pages": 312,
+      "avg_chars_per_page": 186.1,
+      "repeated_line_ratio": 0.265,
+      "quality_score": 70.0,
+      "quality_flags": [
+        "low_text_density"
+      ],
+      "needs_ocr": true
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/inpres/inpres-no-3-tahun-2012.pdf",
+      "type": "inpres",
+      "pages": 5,
+      "avg_chars_per_page": 959.8,
+      "repeated_line_ratio": 0.096,
+      "quality_score": 80.0,
+      "quality_flags": [
+        "missing_pasal"
+      ],
+      "needs_ocr": true
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenhub-no-pm56-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendag-no-46-tahun-2020.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkominfo-no-25-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-47-tahun-1950.pdf",
+      "type": "keppres",
+      "pages": 2,
+      "avg_chars_per_page": 858.0,
+      "repeated_line_ratio": 0.04,
+      "quality_score": 80.0,
+      "quality_flags": [
+        "missing_pasal"
+      ],
+      "needs_ocr": true
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenristekdikti-no-22-tahun-2015.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-51-tahun-1950.pdf",
+      "type": "keppres",
+      "pages": 2,
+      "avg_chars_per_page": 976.0,
+      "repeated_line_ratio": 0.034,
+      "quality_score": 65.0,
+      "quality_flags": [
+        "missing_pasal",
+        "missing_decision_marker"
+      ],
+      "needs_ocr": true
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenko-polhukam-no-16-tahun-2014.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/inpres/inpres-no-23-tahun-1998.pdf",
+      "type": "inpres",
+      "pages": 3,
+      "avg_chars_per_page": 777.7,
+      "repeated_line_ratio": 0.161,
+      "quality_score": 85.0,
+      "quality_flags": [
+        "missing_decision_marker"
+      ],
+      "needs_ocr": true
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkeu-no-19-pmk-07-2017-tahun-2017.pdf",
+      "type": "permen",
+      "pages": 64,
+      "avg_chars_per_page": 195.9,
+      "repeated_line_ratio": 0.26,
+      "quality_score": 70.0,
+      "quality_flags": [
+        "low_text_density"
+      ],
+      "needs_ocr": true
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/inpres/inpres-no-1-tahun-2014.pdf",
+      "type": "inpres",
+      "pages": 4,
+      "avg_chars_per_page": 871.0,
+      "repeated_line_ratio": 0.036,
+      "quality_score": 65.0,
+      "quality_flags": [
+        "missing_pasal",
+        "missing_decision_marker"
+      ],
+      "needs_ocr": true
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permenkes-no-53-tahun-2014.pdf",
+      "type": "permen",
+      "pages": 98,
+      "avg_chars_per_page": 113.1,
+      "repeated_line_ratio": 0.246,
+      "quality_score": 70.0,
+      "quality_flags": [
+        "low_text_density"
+      ],
+      "needs_ocr": true
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/keppres/keppres-no-73-tahun-1953.pdf",
+      "type": "keppres",
+      "pages": 2,
+      "avg_chars_per_page": 975.0,
+      "repeated_line_ratio": 0.046,
+      "quality_score": 80.0,
+      "quality_flags": [
+        "missing_pasal"
+      ],
+      "needs_ocr": true
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-kki-no-61-tahun-2019.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/permen/permendikbud-no-9-tahun-2017.pdf",
+      "type": "permen",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bmkg-no-4-tahun-2020.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/other/peraturan-bnp2-no-11-tahun-2018.pdf",
+      "type": "other",
+      "reason": "extract_error",
+      "error": "Scanned PDF - OCR required"
+    }
+  ]
+}

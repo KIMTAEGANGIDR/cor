@@ -1,0 +1,17 @@
+{
+  "total": 2,
+  "candidates": [
+    {
+      "path": "cor/peraturan/data/pdfs/perpres/perpres-no-37-tahun-2011.pdf",
+      "type": "perpres",
+      "reason": "extract_error",
+      "error": "Failed to open file 'cor/peraturan/data/pdfs/perpres/perpres-no-37-tahun-2011.pdf'."
+    },
+    {
+      "path": "cor/peraturan/data/pdfs/pp/pp-no-4-tahun-1978.pdf",
+      "type": "pp",
+      "reason": "extract_error",
+      "error": "Failed to open file 'cor/peraturan/data/pdfs/pp/pp-no-4-tahun-1978.pdf'."
+    }
+  ]
+}

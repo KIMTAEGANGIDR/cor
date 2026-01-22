@@ -1,7 +1,7 @@
 """
 ILIS OCR Pipeline - Batch OCR Processor
 
-정제된 이미지에 대해 OCR 수행
+ 이미지에 대해 OCR 수행
 - PaddleOCR 기반 (플러그인 방식으로 확장 가능)
 - GPU 가속 지원
 - 배치 처리 및 체크포인트 지원
@@ -85,10 +85,12 @@ class PaddleOCREngine(OCREngine):
         self,
         lang: str = "en",
         use_gpu: bool = True,
+        use_angle_cls: bool = True,
         show_log: bool = False,
     ):
         self.lang = lang
         self.use_gpu = use_gpu
+        self.use_angle_cls = use_angle_cls
         self.show_log = show_log
         self.ocr = None
 
@@ -107,11 +109,42 @@ class PaddleOCREngine(OCREngine):
                 paddle.set_device('gpu:0')
 
             from paddleocr import PaddleOCR
-            # PaddleOCR 3.x API (PP-OCRv5)
-            self.ocr = PaddleOCR(lang=self.lang)
+            # PaddleOCR 2.x/3.x 모두 지원하도록 초기화 옵션 동적으로 설정
+            import inspect
+            kwargs = {"lang": self.lang}
+            sig = inspect.signature(PaddleOCR.__init__)
+            if "use_gpu" in sig.parameters:
+                kwargs["use_gpu"] = self.use_gpu
+            if "use_angle_cls" in sig.parameters:
+                kwargs["use_angle_cls"] = self.use_angle_cls
+            if "show_log" in sig.parameters:
+                kwargs["show_log"] = self.show_log
+            self.ocr = PaddleOCR(**kwargs)
             logger.info(f"PaddleOCR PP-OCRv5 initialized (lang={self.lang}, gpu={self.use_gpu})")
         except ImportError:
             raise RuntimeError("PaddleOCR not installed. Run: pip install paddleocr")
+        except Exception as exc:
+            if self.use_gpu:
+                logger.warning(f"PaddleOCR GPU init failed, falling back to CPU: {exc}")
+                self.use_gpu = False
+                try:
+                    import paddle
+                    paddle.set_device('cpu')
+                except Exception:
+                    pass
+                from paddleocr import PaddleOCR
+                import inspect
+                kwargs = {"lang": self.lang}
+                sig = inspect.signature(PaddleOCR.__init__)
+                if "use_gpu" in sig.parameters:
+                    kwargs["use_gpu"] = self.use_gpu
+                if "use_angle_cls" in sig.parameters:
+                    kwargs["use_angle_cls"] = self.use_angle_cls
+                if "show_log" in sig.parameters:
+                    kwargs["show_log"] = self.show_log
+                self.ocr = PaddleOCR(**kwargs)
+            else:
+                raise
 
     def process_image(self, image_path: str) -> OCRResult:
         """단일 이미지 OCR (PP-OCRv5)"""
@@ -119,34 +152,59 @@ class PaddleOCREngine(OCREngine):
             self.initialize()
 
         try:
-            # PaddleOCR 3.x API: predict() 메서드 사용
-            result = self.ocr.predict(image_path)
+            if hasattr(self.ocr, "predict"):
+                # PaddleOCR 3.x API: predict() 메서드 사용
+                result = self.ocr.predict(image_path)
+                if not result:
+                    return OCRResult(text="", confidence=0.0, boxes=[])
 
-            if not result:
-                return OCRResult(text="", confidence=0.0, boxes=[])
+                # 결과 파싱 (PaddleOCR 3.x 형식)
+                res = result[0]
+                texts = res.get('rec_texts', [])
+                scores = res.get('rec_scores', [])
+                polys = res.get('rec_polys', [])
 
-            # 결과 파싱 (PaddleOCR 3.x 형식)
-            res = result[0]
-            texts = res.get('rec_texts', [])
-            scores = res.get('rec_scores', [])
-            polys = res.get('rec_polys', [])
+                if not texts:
+                    return OCRResult(text="", confidence=0.0, boxes=[])
 
-            if not texts:
-                return OCRResult(text="", confidence=0.0, boxes=[])
+                # 박스 정보 구성
+                boxes = []
+                for i, (text, score) in enumerate(zip(texts, scores)):
+                    box_info = {
+                        "text": text,
+                        "confidence": float(score),
+                    }
+                    if i < len(polys):
+                        box_info["box"] = polys[i].tolist() if hasattr(polys[i], 'tolist') else polys[i]
+                    boxes.append(box_info)
 
-            # 박스 정보 구성
-            boxes = []
-            for i, (text, score) in enumerate(zip(texts, scores)):
-                box_info = {
-                    "text": text,
-                    "confidence": float(score),
-                }
-                if i < len(polys):
-                    box_info["box"] = polys[i].tolist() if hasattr(polys[i], 'tolist') else polys[i]
-                boxes.append(box_info)
+                full_text = "\n".join(texts)
+                avg_conf = sum(scores) / len(scores) if scores else 0.0
+            else:
+                # PaddleOCR 2.x API: ocr() 메서드 사용
+                result = self.ocr.ocr(image_path, cls=True)
+                if not result:
+                    return OCRResult(text="", confidence=0.0, boxes=[])
 
-            full_text = "\n".join(texts)
-            avg_conf = sum(scores) / len(scores) if scores else 0.0
+                lines = result[0] if isinstance(result, list) and result else result
+                texts = []
+                scores = []
+                boxes = []
+                for line in lines:
+                    box, (text, score) = line
+                    texts.append(text)
+                    scores.append(score)
+                    boxes.append({
+                        "text": text,
+                        "confidence": float(score),
+                        "box": box,
+                    })
+
+                if not texts:
+                    return OCRResult(text="", confidence=0.0, boxes=[])
+
+                full_text = "\n".join(texts)
+                avg_conf = sum(scores) / len(scores) if scores else 0.0
 
             return OCRResult(
                 text=full_text,
