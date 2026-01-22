@@ -4,13 +4,14 @@
 from __future__ import annotations
 
 import argparse
+import functools
 import json
+import multiprocessing as mp
 import os
 import random
 import sqlite3
 import sys
 import unicodedata
-from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Iterable
@@ -40,16 +41,9 @@ SEARCH_WINDOW_MULT = 2
 SEARCH_WINDOW_PAD = 200
 DEFAULT_REPORTS_ROOT = Path("/workspace/cor_reports") if Path("/workspace").exists() else (PROJECT_ROOT / "docs" / "reports")
 
-
-@dataclass
-class PageCheck:
-    slug: str
-    page_index: int
-    ref_len: int
-    cand_len: int
-    distance: int
-    cer: float
-    status: str
+_OCR_ENGINE = None
+_EXTRACTOR = None
+_NOISE_REGEXES = None
 
 
 def normalize_text(text: str) -> str:
@@ -230,6 +224,22 @@ def iter_random_documents(conn: sqlite3.Connection, sample_size: int, seed: int)
         yield row
 
 
+def iter_documents(conn: sqlite3.Connection, limit: int, offset: int, order_by: str) -> Iterable[sqlite3.Row]:
+    query = """
+        SELECT slug, local_pdf_path, extracted_text
+        FROM peraturan
+        WHERE local_pdf_path IS NOT NULL
+          AND extracted_text IS NOT NULL
+          AND extracted_text != ''
+    """
+    if order_by:
+        query += f" ORDER BY {order_by}"
+    if limit > 0:
+        query += f" LIMIT {limit} OFFSET {offset}"
+    conn.row_factory = sqlite3.Row
+    return conn.execute(query)
+
+
 def append_run_log(run_log_path: Path, event: dict) -> None:
     run_log_path.parent.mkdir(parents=True, exist_ok=True)
     event["ts"] = datetime.utcnow().isoformat(timespec="seconds") + "Z"
@@ -255,6 +265,175 @@ def load_completed_slugs(run_log_path: Path) -> set[str]:
     return completed
 
 
+def _init_worker(skip_ocr: bool) -> None:
+    global _OCR_ENGINE, _EXTRACTOR, _NOISE_REGEXES
+    _EXTRACTOR = TextExtractor()
+    _NOISE_REGEXES = [
+        __import__("re").compile(p, __import__("re").MULTILINE)
+        for p in _EXTRACTOR.NOISE_PATTERNS
+    ]
+    _OCR_ENGINE = None
+    if not skip_ocr:
+        _OCR_ENGINE = PaddleOCREngine(lang="en", use_gpu=True)
+
+
+def _process_document(doc_row: dict, args_dict: dict) -> dict:
+    global _OCR_ENGINE, _EXTRACTOR, _NOISE_REGEXES
+    slug = doc_row["slug"]
+    local_pdf_path = doc_row["local_pdf_path"]
+    extracted_text = doc_row.get("extracted_text") or ""
+
+    output_dir = Path(args_dict["output_dir"])
+    images_dir = output_dir / "images"
+    pdf_path = resolve_pdf_path(Path(args_dict["pdf_base"]), local_pdf_path)
+
+    if not pdf_path.exists():
+        return {
+            "slug": slug,
+            "status": "error",
+            "reason": "pdf_missing",
+            "page_checks": [],
+            "failures": [],
+            "pages_failed": 0,
+            "max_cer": 0.0,
+            "avg_cer": 0.0,
+            "total_pages": 0,
+            "pages_checked": 0,
+        }
+
+    try:
+        doc = fitz.open(pdf_path)
+    except Exception:
+        return {
+            "slug": slug,
+            "status": "error",
+            "reason": "pdf_open_failed",
+            "page_checks": [],
+            "failures": [],
+            "pages_failed": 0,
+            "max_cer": 0.0,
+            "avg_cer": 0.0,
+            "total_pages": 0,
+            "pages_checked": 0,
+        }
+
+    total_pages = len(doc)
+    page_limit = args_dict["max_pages"] if args_dict["max_pages"] > 0 else total_pages
+    page_texts: list[str] = []
+    ocr_page_texts: list[str] = []
+
+    for idx in range(min(total_pages, page_limit)):
+        text = doc.load_page(idx).get_text()
+        page_texts.append(text)
+
+        image_path = images_dir / slug / f"page_{idx + 1:04d}.png"
+        render_page_image(doc, idx, args_dict["image_dpi"], image_path)
+        if args_dict["deskew"]:
+            deskew_image(image_path)
+
+        if _OCR_ENGINE:
+            ocr_result = _OCR_ENGINE.process_image(str(image_path))
+            ocr_page_texts.append(ocr_result.text or "")
+        else:
+            ocr_page_texts.append("")
+
+    doc.close()
+
+    if args_dict["skip_ocr"]:
+        return {
+            "slug": slug,
+            "status": "skipped",
+            "reason": "skip_ocr",
+            "page_checks": [],
+            "failures": [],
+            "pages_failed": 0,
+            "max_cer": 0.0,
+            "avg_cer": 0.0,
+            "total_pages": total_pages,
+            "pages_checked": 0,
+        }
+
+    page_lines = [_EXTRACTOR._extract_page_lines(text) for text in page_texts]
+    repeated_lines, _ = _EXTRACTOR._find_repeated_lines(page_lines, len(page_texts))
+    _ = compute_body_slices(page_texts, _EXTRACTOR)
+
+    ref_pages = []
+    for text in ocr_page_texts:
+        cleaned = clean_lines(text, _NOISE_REGEXES, repeated_lines, _EXTRACTOR)
+        ref_pages.append(normalize_text(cleaned))
+
+    cand_cleaned = clean_lines(extracted_text, _NOISE_REGEXES, repeated_lines, _EXTRACTOR)
+    cand_text = normalize_text(cand_cleaned)
+
+    cand_pos = 0
+    page_checks: list[dict] = []
+    failures: list[dict] = []
+
+    for page_index, ref in enumerate(ref_pages, start=1):
+        if not ref:
+            page_checks.append({
+                "slug": slug,
+                "page_index": page_index,
+                "ref_len": 0,
+                "cand_len": 0,
+                "distance": 0,
+                "cer": 0.0,
+                "status": "skip_empty",
+            })
+            continue
+
+        anchor = ref[:min(ANCHOR_LEN, len(ref))]
+        search_window = cand_pos + (len(ref) * SEARCH_WINDOW_MULT) + SEARCH_WINDOW_PAD
+        found = cand_text.find(anchor, cand_pos, min(search_window, len(cand_text)))
+        if found != -1:
+            cand_pos = found
+
+        cand_segment = cand_text[cand_pos:cand_pos + len(ref)]
+        max_dist = max(1, int(len(ref) * CER_THRESHOLD))
+        distance = bounded_levenshtein(ref, cand_segment, max_dist)
+        cer = distance / len(ref)
+        status = "pass" if cer <= CER_THRESHOLD else "fail"
+
+        page_checks.append({
+            "slug": slug,
+            "page_index": page_index,
+            "ref_len": len(ref),
+            "cand_len": len(cand_segment),
+            "distance": distance,
+            "cer": cer,
+            "status": status,
+        })
+        if status == "fail":
+            failures.append({
+                "slug": slug,
+                "page_index": page_index,
+                "cer": cer,
+                "ref_text": ref,
+                "cand_text": cand_segment,
+                "ocr_raw": ocr_page_texts[page_index - 1] if page_index - 1 < len(ocr_page_texts) else "",
+            })
+        cand_pos += len(cand_segment)
+
+    pages_checked = sum(1 for p in page_checks if p["status"] in ("pass", "fail"))
+    pages_failed = sum(1 for p in page_checks if p["status"] == "fail")
+    cer_values = [p["cer"] for p in page_checks if p["status"] in ("pass", "fail")]
+    max_cer = max(cer_values) if cer_values else 0.0
+    avg_cer = (sum(cer_values) / len(cer_values)) if cer_values else 0.0
+    status = "pass" if pages_failed == 0 else "fail"
+
+    return {
+        "slug": slug,
+        "status": status,
+        "page_checks": page_checks,
+        "failures": failures,
+        "pages_failed": pages_failed,
+        "max_cer": max_cer,
+        "avg_cer": avg_cer,
+        "total_pages": len(ref_pages),
+        "pages_checked": pages_checked,
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Sample OCR compare pipeline")
     parser.add_argument("--db", default=str(PROJECT_ROOT / "peraturan" / "data" / "peraturan.db"))
@@ -262,13 +441,18 @@ def main() -> int:
     parser.add_argument("--output-dir", default=str(DEFAULT_REPORTS_ROOT / "ocr_compare_sample"))
     parser.add_argument("--sample-size", type=int, default=1000)
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--limit", type=int, default=0)
+    parser.add_argument("--offset", type=int, default=0)
+    parser.add_argument("--order-by", default="tahun DESC, slug")
     parser.add_argument("--image-dpi", type=int, default=150)
     parser.add_argument("--max-pages", type=int, default=0)
+    parser.add_argument("--num-workers", type=int, default=mp.cpu_count())
     parser.add_argument("--deskew", action="store_true")
     parser.add_argument("--skip-ocr", action="store_true")
     parser.add_argument("--run-log", default=str(DEFAULT_REPORTS_ROOT / "ocr_compare_sample" / "ocr_compare_runlog.jsonl"))
     parser.add_argument("--resume", action="store_true")
     parser.add_argument("--progress-every", type=int, default=25)
+    parser.add_argument("--fail-fast-after", type=int, default=0)
     args = parser.parse_args()
 
     if not PYMUPDF_AVAILABLE:
@@ -280,17 +464,8 @@ def main() -> int:
     images_dir = output_dir / "images"
     pages_path = output_dir / "ocr_compare_pages.jsonl"
     summary_path = output_dir / "ocr_compare_summary.json"
+    failures_path = output_dir / "ocr_compare_failures.jsonl"
     run_log_path = Path(args.run_log)
-
-    extractor = TextExtractor()
-    noise_regexes = [
-        __import__("re").compile(p, __import__("re").MULTILINE)
-        for p in extractor.NOISE_PATTERNS
-    ]
-
-    ocr_engine = None
-    if not args.skip_ocr:
-        ocr_engine = PaddleOCREngine(lang="en", use_gpu=True)
 
     run_id = datetime.utcnow().strftime("%Y%m%dT%H%M%SZ") + f"-{os.getpid()}"
     append_run_log(run_log_path, {"event": "run_start", "run_id": run_id, "args": vars(args)})
@@ -311,146 +486,131 @@ def main() -> int:
                     doc_results.append(doc)
 
     pages_mode = "a" if args.resume and pages_path.exists() else "w"
+    failures_mode = "a" if args.resume and failures_path.exists() else "w"
+
+    def finalize_run(summary: dict, reason: str | None = None) -> None:
+        summary_path.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
+        payload = {
+            "event": "run_end",
+            "run_id": run_id,
+            "total_docs": summary["total_docs"],
+            "passed": summary["passed"],
+            "failed": summary["failed"],
+            "skipped": summary["skipped"],
+            "errors": summary["errors"],
+        }
+        if reason:
+            payload["reason"] = reason
+        append_run_log(run_log_path, payload)
 
     conn = sqlite3.connect(args.db)
     processed_docs = 0
-    with pages_path.open(pages_mode, encoding="utf-8") as page_out:
-        for row in iter_random_documents(conn, args.sample_size, args.seed):
-            slug = row["slug"]
-            if args.resume and slug in completed_slugs:
-                continue
-            local_pdf_path = row["local_pdf_path"]
-            extracted_text = row["extracted_text"] or ""
+    failed_docs = 0
+    doc_rows: list[dict] = []
+    if args.limit > 0:
+        rows = iter_documents(conn, args.limit, args.offset, args.order_by)
+    else:
+        rows = iter_random_documents(conn, args.sample_size, args.seed)
 
-            pdf_path = resolve_pdf_path(Path(args.pdf_base), local_pdf_path)
-            if not pdf_path.exists():
-                doc_results.append({"slug": slug, "status": "error", "reason": "pdf_missing"})
-                append_run_log(run_log_path, {"event": "doc_done", "run_id": run_id, "slug": slug, "status": "error", "reason": "pdf_missing"})
-                continue
+    for row in rows:
+        slug = row["slug"]
+        if args.resume and slug in completed_slugs:
+            continue
+        doc_rows.append({
+            "slug": slug,
+            "local_pdf_path": row["local_pdf_path"],
+            "extracted_text": row["extracted_text"],
+        })
 
-            try:
-                doc = fitz.open(pdf_path)
-            except Exception:
-                doc_results.append({"slug": slug, "status": "error", "reason": "pdf_open_failed"})
-                append_run_log(run_log_path, {"event": "doc_done", "run_id": run_id, "slug": slug, "status": "error", "reason": "pdf_open_failed"})
-                continue
+    args_dict = {
+        "pdf_base": args.pdf_base,
+        "output_dir": str(output_dir),
+        "image_dpi": args.image_dpi,
+        "max_pages": args.max_pages,
+        "deskew": args.deskew,
+        "skip_ocr": args.skip_ocr,
+    }
 
-            total_pages = len(doc)
-            page_limit = args.max_pages if args.max_pages > 0 else total_pages
-            page_texts = []
-            ocr_page_texts = []
+    def handle_result(result: dict, page_out, fail_out) -> None:
+        nonlocal processed_docs, failed_docs
+        slug = result["slug"]
+        status = result.get("status", "error")
+        reason = result.get("reason")
 
-            for idx in range(min(total_pages, page_limit)):
-                text = doc.load_page(idx).get_text()
-                page_texts.append(text)
+        for page_check in result.get("page_checks", []):
+            page_out.write(json.dumps(page_check, ensure_ascii=False) + "\n")
+        for failure in result.get("failures", []):
+            fail_out.write(json.dumps(failure, ensure_ascii=False) + "\n")
 
-                image_path = images_dir / slug / f"page_{idx + 1:04d}.png"
-                render_page_image(doc, idx, args.image_dpi, image_path)
-                if args.deskew:
-                    deskew_image(image_path)
+        doc_entry = {
+            "slug": slug,
+            "total_pages": result.get("total_pages", 0),
+            "pages_checked": result.get("pages_checked", 0),
+            "pages_failed": result.get("pages_failed", 0),
+            "max_cer": result.get("max_cer", 0.0),
+            "avg_cer": result.get("avg_cer", 0.0),
+            "status": status,
+        }
+        if reason:
+            doc_entry["reason"] = reason
+        doc_results.append(doc_entry)
 
-                if ocr_engine:
-                    ocr_result = ocr_engine.process_image(str(image_path))
-                    ocr_page_texts.append(ocr_result.text or "")
-                else:
-                    ocr_page_texts.append("")
+        if status == "fail":
+            failed_docs += 1
 
-            doc.close()
+        log_payload = {
+            "event": "doc_done",
+            "run_id": run_id,
+            "slug": slug,
+            "status": status,
+            "pages_failed": result.get("pages_failed", 0),
+            "max_cer": result.get("max_cer", 0.0),
+            "avg_cer": result.get("avg_cer", 0.0),
+        }
+        if reason:
+            log_payload["reason"] = reason
+        append_run_log(run_log_path, log_payload)
 
-            page_lines = [extractor._extract_page_lines(text) for text in page_texts]
-            repeated_lines, _ = extractor._find_repeated_lines(page_lines, len(page_texts))
-            body_page_texts = compute_body_slices(page_texts, extractor)
-
-            ref_pages = []
-            for text in ocr_page_texts:
-                cleaned = clean_lines(text, noise_regexes, repeated_lines, extractor)
-                ref_pages.append(normalize_text(cleaned))
-
-            cand_cleaned = clean_lines(extracted_text, noise_regexes, repeated_lines, extractor)
-            cand_text = normalize_text(cand_cleaned)
-
-            if args.skip_ocr:
-                doc_results.append({"slug": slug, "status": "skipped", "reason": "skip_ocr"})
-                append_run_log(run_log_path, {"event": "doc_done", "run_id": run_id, "slug": slug, "status": "skipped", "reason": "skip_ocr"})
-                continue
-
-            cand_pos = 0
-            page_checks: list[PageCheck] = []
-
-            for page_index, ref in enumerate(ref_pages, start=1):
-                if not ref:
-                    page_checks.append(PageCheck(
-                        slug=slug,
-                        page_index=page_index,
-                        ref_len=0,
-                        cand_len=0,
-                        distance=0,
-                        cer=0.0,
-                        status="skip_empty",
-                    ))
-                    continue
-
-                anchor = ref[:min(ANCHOR_LEN, len(ref))]
-                search_window = cand_pos + (len(ref) * SEARCH_WINDOW_MULT) + SEARCH_WINDOW_PAD
-                found = cand_text.find(anchor, cand_pos, min(search_window, len(cand_text)))
-                if found != -1:
-                    cand_pos = found
-
-                cand_segment = cand_text[cand_pos:cand_pos + len(ref)]
-                max_dist = max(1, int(len(ref) * CER_THRESHOLD))
-                distance = bounded_levenshtein(ref, cand_segment, max_dist)
-                cer = distance / len(ref)
-                status = "pass" if cer <= CER_THRESHOLD else "fail"
-
-                page_checks.append(PageCheck(
-                    slug=slug,
-                    page_index=page_index,
-                    ref_len=len(ref),
-                    cand_len=len(cand_segment),
-                    distance=distance,
-                    cer=cer,
-                    status=status,
-                ))
-                cand_pos += len(cand_segment)
-
-            pages_checked = sum(1 for p in page_checks if p.status in ("pass", "fail"))
-            pages_failed = sum(1 for p in page_checks if p.status == "fail")
-            cer_values = [p.cer for p in page_checks if p.status in ("pass", "fail")]
-            max_cer = max(cer_values) if cer_values else 0.0
-            avg_cer = (sum(cer_values) / len(cer_values)) if cer_values else 0.0
-            status = "pass" if pages_failed == 0 else "fail"
-
-            for page_check in page_checks:
-                payload = asdict(page_check)
-                page_out.write(json.dumps(payload, ensure_ascii=False) + "\n")
-
-            doc_results.append({
-                "slug": slug,
-                "total_pages": len(ref_pages),
-                "pages_checked": pages_checked,
-                "pages_failed": pages_failed,
-                "max_cer": max_cer,
-                "avg_cer": avg_cer,
-                "status": status,
-            })
-
+        processed_docs += 1
+        if args.progress_every > 0 and processed_docs % args.progress_every == 0:
             append_run_log(run_log_path, {
-                "event": "doc_done",
+                "event": "progress",
                 "run_id": run_id,
-                "slug": slug,
-                "status": status,
-                "pages_failed": pages_failed,
-                "max_cer": max_cer,
-                "avg_cer": avg_cer,
+                "processed_docs": processed_docs,
+                "failed_docs": failed_docs,
             })
 
-            processed_docs += 1
-            if args.progress_every > 0 and processed_docs % args.progress_every == 0:
-                append_run_log(run_log_path, {
-                    "event": "progress",
-                    "run_id": run_id,
-                    "processed_docs": processed_docs,
-                })
+    with pages_path.open(pages_mode, encoding="utf-8") as page_out, failures_path.open(failures_mode, encoding="utf-8") as fail_out:
+        if args.num_workers > 1:
+            ctx = mp.get_context("spawn")
+            with ctx.Pool(processes=args.num_workers, initializer=_init_worker, initargs=(args.skip_ocr,)) as pool:
+                for result in pool.imap_unordered(functools.partial(_process_document, args_dict=args_dict), doc_rows, chunksize=1):
+                    handle_result(result, page_out, fail_out)
+                    if args.fail_fast_after > 0 and processed_docs >= args.fail_fast_after and failed_docs > 0:
+                        pool.terminate()
+                        break
+                pool.join()
+        else:
+            _init_worker(args.skip_ocr)
+            for doc_row in doc_rows:
+                result = _process_document(doc_row, args_dict)
+                handle_result(result, page_out, fail_out)
+                if args.fail_fast_after > 0 and processed_docs >= args.fail_fast_after and failed_docs > 0:
+                    break
+
+    if args.fail_fast_after > 0 and processed_docs >= args.fail_fast_after and failed_docs > 0:
+        summary = {
+            "total_docs": len(doc_results),
+            "passed": sum(1 for d in doc_results if d.get("status") == "pass"),
+            "failed": sum(1 for d in doc_results if d.get("status") == "fail"),
+            "skipped": sum(1 for d in doc_results if d.get("status") == "skipped"),
+            "errors": sum(1 for d in doc_results if d.get("status") == "error"),
+            "cer_threshold": CER_THRESHOLD,
+            "documents": doc_results,
+        }
+        finalize_run(summary, reason="fail_fast")
+        print("Fail-fast triggered: failed docs detected.")
+        return 2
 
     conn.close()
 
@@ -464,16 +624,7 @@ def main() -> int:
         "documents": doc_results,
     }
 
-    summary_path.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
-    append_run_log(run_log_path, {
-        "event": "run_end",
-        "run_id": run_id,
-        "total_docs": summary["total_docs"],
-        "passed": summary["passed"],
-        "failed": summary["failed"],
-        "skipped": summary["skipped"],
-        "errors": summary["errors"],
-    })
+    finalize_run(summary)
     print(f"Wrote summary: {summary_path}")
     print(f"Wrote pages: {pages_path}")
     print(f"Images in: {images_dir}")
