@@ -35,6 +35,9 @@ JENIS_URL_MAP = {
     "PENETAPAN PRESIDEN": "/penpres",
     "INSTRUKSI PRESIDEN": "/inpres",
     "KEPUTUSAN PRESIDEN": "/keppres",
+    # KOICA 누락 보완
+    "UUDRT": "/uudrt",
+    "UNDANG-UNDANG DARURAT": "/uudrt",
 }
 
 

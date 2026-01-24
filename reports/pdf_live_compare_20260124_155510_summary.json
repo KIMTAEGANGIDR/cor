@@ -1,0 +1,14 @@
+{
+  "total_rows": 41052,
+  "checked_urls": 37750,
+  "no_pdf_url": 3302,
+  "request_error": 0,
+  "status_ok": 37747,
+  "status_not_ok": 3,
+  "content_length_missing": 37750,
+  "local_missing": 1714,
+  "length_match": 0,
+  "length_mismatch": 0,
+  "generated_at": "2026-01-24T18:48:07",
+  "jsonl_path": "/home/tylor/cor/reports/pdf_live_compare_20260124_155510.jsonl"
+}

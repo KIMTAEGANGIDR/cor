@@ -1,0 +1,153 @@
+{
+  "inpres": {
+    "count": 15,
+    "samples": [
+      "inpres-no-16-tahun-1980.pdf",
+      "inpres-no-13-tahun-1981.pdf",
+      "inpres-no-9-tahun-1982.pdf",
+      "inpres-no-12-tahun-1983.pdf",
+      "inpres-no-4-tahun-1986.pdf",
+      "inpres-no-6-tahun-1989.pdf",
+      "inpres-no-5-tahun-1997.pdf",
+      "inpres-no-10-tahun-1998.pdf",
+      "inpres-no-1-tahun-1999.pdf",
+      "inpres-no-9-tahun-2000.pdf"
+    ]
+  },
+  "pp": {
+    "count": 15,
+    "samples": [
+      "pp-no-2-tahun-1945.pdf",
+      "pp-no-24-tahun-1955.pdf",
+      "pp-no-61-tahun-1961.pdf",
+      "pp-no-9-tahun-1968.pdf",
+      "pp-no-27-tahun-1980.pdf",
+      "pp-no-9-tahun-1988.pdf",
+      "pp-no-10-tahun-1993.pdf",
+      "pp-no-1-tahun-1999.pdf",
+      "pp-no-30-tahun-2002.pdf",
+      "pp-no-47-tahun-2007.pdf"
+    ]
+  },
+  "other": {
+    "count": 15,
+    "samples": [
+      "peraturan-bi-no-3-3-pbi-2001-tahun-2001.pdf",
+      "peraturan-bnn-no-9-tahun-2012.pdf",
+      "peraturan-kki-no-11-tahun-2013.pdf",
+      "peraturan-bnpb-no-02-tahun-2015.pdf",
+      "peraturan-batan-no-2-tahun-2016.pdf",
+      "peraturan-anri-no-11-tahun-2017.pdf",
+      "peraturan-bppt-no-16-tahun-2017.pdf",
+      "peraturan-bssn-no-9-tahun-2018.pdf",
+      "peraturan-bssn-no-7-tahun-2019.pdf",
+      "peraturan-bkn-no-10-tahun-2020.pdf"
+    ]
+  },
+  "penpres": {
+    "count": 1,
+    "samples": [
+      "penpres-no-1-tahun-1965.pdf"
+    ]
+  },
+  "permen": {
+    "count": 15,
+    "samples": [
+      "permenkumham-no-m-01-pr-07-10-tahun-2005.pdf",
+      "permenkeu-no-243-pmk-04-2011-tahun-2011.pdf",
+      "permenhub-no-pm-3-tahun-2012.pdf",
+      "permenperin-no-19-m-ind-per-3-2013-tahun-2013.pdf",
+      "permenag-no-39-tahun-2014.pdf",
+      "permen-kkp-no-25-permen-kp-2015-tahun-2015.pdf",
+      "permenlu-no-2-tahun-2016.pdf",
+      "permenkeu-no-21-pmk-06-2017-tahun-2017.pdf",
+      "permenkominfo-no-13-tahun-2018.pdf",
+      "permenkumham-no-31-tahun-2019.pdf"
+    ]
+  },
+  "tapmpr": {
+    "count": 15,
+    "samples": [
+      "tap-mpr-no-i-mprs-1960-tahun-1960.pdf",
+      "tapmpr-no-iv-mprs-1963-tahun-1963.pdf",
+      "tap-mpr-no-v-mprs-1965-tahun-1965.pdf",
+      "tap-mpr-no-iv-mpr-1973-tahun-1973.pdf",
+      "tap-mpr-no-vii-mpr-1978-tahun-1978.pdf",
+      "tap-mpr-no-iii-mpr-1978-tahun-1978.pdf",
+      "tap-mpr-no-ii-mpr-1983-tahun-1983.pdf",
+      "tap-mpr-no-iii-mpr-1983-tahun-1983.pdf",
+      "tap-mpr-no-xvi-mpr-1998-tahun-1998.pdf",
+      "tap-mpr-no-x-mpr-1998-tahun-1998.pdf"
+    ]
+  },
+  "uu": {
+    "count": 15,
+    "samples": [
+      "uu-no-1-tahun-1945.pdf",
+      "uu-no-2-tahun-1951.pdf",
+      "uu-no-68-tahun-1954.pdf",
+      "uu-no-61-tahun-1957.pdf",
+      "uu-no-18-tahun-1961.pdf",
+      "uu-no-25-tahun-1968.pdf",
+      "uu-no-3-tahun-1981.pdf",
+      "uu-no-12-tahun-1994.pdf",
+      "uu-no-13-tahun-2000.pdf",
+      "uu-no-3-tahun-2004.pdf"
+    ]
+  },
+  "perppu": {
+    "count": 15,
+    "samples": [
+      "perppu-no-7-tahun-1963.pdf",
+      "perppu-no-6-tahun-1963.pdf",
+      "perppu-no-2-tahun-1963.pdf",
+      "perppu-no-1-tahun-1997.pdf",
+      "perppu-no-2-tahun-1998.pdf",
+      "perppu-no-3-tahun-2000.pdf",
+      "perppu-no-2-tahun-2004.pdf",
+      "perppu-no-2-tahun-2005.pdf",
+      "perppu-no-2-tahun-2007.pdf",
+      "perppu-no-3-tahun-2008.pdf"
+    ]
+  },
+  "perban": {
+    "count": 5,
+    "samples": [
+      "peraturan-koin-no-18-tahun-2025.pdf",
+      "peraturan-bnpt-no-1-tahun-2026.pdf",
+      "peraturan-kpu-no-5-tahun-2025.pdf",
+      "peraturan-lan-no-1-tahun-2026.pdf",
+      "peraturan-bnpb-no-10-tahun-2025.pdf"
+    ]
+  },
+  "keppres": {
+    "count": 15,
+    "samples": [
+      "keppres-no-78-tahun-1950.pdf",
+      "keppres-no-96-tahun-1953.pdf",
+      "keppres-no-10-tahun-1956.pdf",
+      "keppres-no-17-tahun-1958.pdf",
+      "keppres-no-74-tahun-1982.pdf",
+      "keppres-no-51-tahun-1985.pdf",
+      "keppres-no-14-tahun-1989.pdf",
+      "keppres-no-42-tahun-1996.pdf",
+      "keppres-no-15-tahun-1998.pdf",
+      "keppres-no-79-tahun-1999.pdf"
+    ]
+  },
+  "perpres": {
+    "count": 15,
+    "samples": [
+      "perpres-no-20-tahun-39.pdf",
+      "perpres-no-71-tahun-2005.pdf",
+      "perpres-no-37-tahun-2007.pdf",
+      "perpres-no-7-tahun-2009.pdf",
+      "perpres-no-28-tahun-2011.pdf",
+      "perpres-no-85-tahun-2013.pdf",
+      "perpres-no-24-tahun-2014.pdf",
+      "perpres-no-16-tahun-2015.pdf",
+      "perpres-no-71-tahun-2016.pdf",
+      "perpres-no-120-tahun-2018.pdf"
+    ]
+  }
+}

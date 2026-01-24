@@ -112,7 +112,7 @@ class Parser:
         """
         # Method 1: Look for direct links to PDF files
         for a in soup.find_all("a", href=True):
-            href = a["href"]
+            href = a["href"].strip().replace(" ", "")
             if "/files/" in href and href.endswith(".pdf"):
                 # Convert relative URL to absolute
                 if href.startswith("/"):
@@ -125,7 +125,7 @@ class Parser:
         for a in soup.find_all("a", href=True):
             img = a.find("img")
             if img and "pdf" in img.get("src", "").lower():
-                href = a["href"]
+                href = a["href"].strip().replace(" ", "")
                 if href.startswith("/"):
                     return f"{self.base_url}{href}"
                 elif not href.startswith("http"):
@@ -135,7 +135,9 @@ class Parser:
         # Method 3: Extract from meta tags (used by UUD, TAP MPR, etc.)
         # <meta name="article:tag" content="https://peraturan.go.id/files/....pdf">
         for meta in soup.find_all("meta", {"name": "article:tag"}):
-            content = meta.get("content", "")
+            content = meta.get("content", "").strip()
+            # Handle URLs with spaces (e.g., "...file .pdf" -> "...file.pdf")
+            content = content.replace(" ", "")
             if content.endswith(".pdf") and "/files/" in content:
                 # Already a full URL
                 if content.startswith("http"):
@@ -150,7 +152,7 @@ class Parser:
             keywords = keywords_meta.get("content", "")
             # Find PDF URL in keywords
             for part in keywords.split(","):
-                part = part.strip()
+                part = part.strip().replace(" ", "")
                 if part.endswith(".pdf") and "/files/" in part:
                     if part.startswith("http"):
                         return part
@@ -171,7 +173,7 @@ class Parser:
 
         # From meta tags
         for meta in soup.find_all("meta", {"name": "article:tag"}):
-            content = meta.get("content", "")
+            content = meta.get("content", "").strip().replace(" ", "")
             if content.endswith(".pdf") and "/files/" in content:
                 url = content if content.startswith("http") else f"{self.base_url}{content}"
                 if url not in seen:
@@ -180,7 +182,7 @@ class Parser:
 
         # From direct links
         for a in soup.find_all("a", href=True):
-            href = a["href"]
+            href = a["href"].strip().replace(" ", "")
             if "/files/" in href and href.endswith(".pdf"):
                 if href.startswith("/"):
                     url = f"{self.base_url}{href}"
