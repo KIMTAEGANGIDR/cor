@@ -154,9 +154,9 @@ class IndonesianDictionary:
         if SASTRAWI_AVAILABLE:
             try:
                 factory = StemmerFactory()
-                self._stemmer = factory.createStemmer()
+                self._stemmer = factory.create_stemmer()
                 sw_factory = StopWordRemoverFactory()
-                self._stopword_remover = sw_factory.createStopWordRemover()
+                self._stopword_remover = sw_factory.create_stop_word_remover()
             except Exception as e:
                 print(f"Warning: Sastrawi 초기화 실패: {e}")
 

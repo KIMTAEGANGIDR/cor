@@ -2,9 +2,15 @@
 ILIS OCR Pipeline - Header Clusterer (STAGE 0)
 
 헤더 이미지 OCR → 텍스트 추출 → TF-IDF → KMeans 클러스터링
+
+지원 OCR 엔진:
+- Surya OCR (기본, GPU 지원, 배치 처리 효율적)
+- EasyOCR (레거시)
 """
 
 import json
+import subprocess
+import tempfile
 import threading
 from pathlib import Path
 from typing import Optional, Generator
@@ -13,7 +19,6 @@ from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import time
 
-import easyocr
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.cluster import KMeans
 import numpy as np
@@ -24,6 +29,7 @@ from .models import DocumentStage
 
 # 기본 설정
 DEFAULT_N_CLUSTERS = 100  # 예상 패턴 수
+DEFAULT_HEADERS_DIR = Path(__file__).parent.parent.parent / "data" / "headers"
 
 # Thread-local storage for EasyOCR readers (thread-safe)
 # 각 스레드마다 별도의 Reader 인스턴스를 유지
@@ -33,10 +39,9 @@ _thread_local = threading.local()
 def get_ocr_reader():
     """
     스레드별 EasyOCR 리더 반환 (thread-safe)
-
-    ThreadPoolExecutor에서 여러 스레드가 동시에 OCR을 실행할 때
-    각 스레드가 독립적인 Reader 인스턴스를 사용하도록 보장
+    레거시 지원용. Surya OCR 사용 권장.
     """
+    import easyocr
     if not hasattr(_thread_local, 'reader'):
         _thread_local.reader = easyocr.Reader(['en', 'id'], gpu=False, verbose=False)
     return _thread_local.reader

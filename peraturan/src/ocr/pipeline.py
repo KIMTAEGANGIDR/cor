@@ -1,1304 +1,676 @@
 """
-OCR 파이프라인 메인 모듈
+ILIS OCR Pipeline
 
-인도네시아 법령 PDF → Akoma Ntoso XML 변환 파이프라인
+멀티프로세스 OCR 파이프라인
+- 4워커 GPU 병렬 처리
+- 내장 텍스트 우선 (OCR 스킵으로 속도 향상)
+- VM 분산 처리 지원
 
-Phase 구성:
-- Phase 0: 파일럿/캘리브레이션
-- Phase 1: 전수 품질 스캔 (페이지 단위)
-- Phase 2: 우선순위 배치 처리
-- Phase 3: 페이지별 적응형 OCR
-- Phase 4: 이중 검증 (구조 + 내용)
-- Phase 5: Akoma Ntoso 변환
-
-v2.1 (2026-01-21): 내장 텍스트 vs OCR 비교 로직 추가
-v2.2 (2026-01-21): 병렬 처리로 GPU 활용도 향상
+Usage:
+    python -m peraturan.src.ocr.pipeline run --workers 4
+    python -m peraturan.src.ocr.pipeline run --workers 4 --shard 0 --total-shards 4
 """
 
-import difflib
-import io
 import json
 import logging
 import os
 import sqlite3
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from dataclasses import dataclass, field, asdict
+import time
+from dataclasses import dataclass, asdict
 from datetime import datetime
-from enum import Enum
+from multiprocessing import Pool, cpu_count
 from pathlib import Path
-from typing import Optional, Iterator, List, Tuple
+from typing import Optional, List
 
-import numpy as np
+os.environ['DISABLE_MODEL_SOURCE_CHECK'] = 'True'
+os.environ['FLAGS_allocator_strategy'] = 'auto_growth'
 
-import fitz  # PyMuPDF
-from rich.console import Console
-from rich.progress import Progress, TaskID
-from rich.table import Table
+import fitz
 
-from .quality_scorer import QualityScorer, QualityResult, ProcessingStrategy
-from .ensemble_ocr import EnsembleOCR, OCRResult, OCREngine
-from .indonesian_dict import IndonesianDictionary
-
-
-# 로깅 설정
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    format='%(asctime)s [%(levelname)s] %(message)s'
 )
 logger = logging.getLogger(__name__)
-console = Console()
+
+DPI = 150
+MIN_TEXT_LENGTH = 50
+MIN_TEXT_QUALITY = 0.7
+
+# 워커별 전역 OCR 엔진
+_ocr_engine = None
 
 
-class DocumentTier(Enum):
-    """문서 우선순위 티어"""
-    TIER1 = 1  # UU (현행 우선)
-    TIER2 = 2  # PP, PERPRES
-    TIER3 = 3  # PERMEN, PERBAN
+def init_worker():
+    """워커 프로세스 초기화"""
+    global _ocr_engine
+
+    import paddle
+    paddle.set_device('gpu:0')
+
+    from paddleocr import PaddleOCR
+    _ocr_engine = PaddleOCR(lang='en')
+
+    logger.info(f"워커 초기화 완료 (PID: {os.getpid()})")
 
 
-class PageStatus(Enum):
-    """페이지 처리 상태"""
-    PENDING = "pending"
-    SCANNING = "scanning"
-    SCANNED = "scanned"
-    PROCESSING = "processing"
-    COMPLETED = "completed"
-    FAILED = "failed"
-    MANUAL_REVIEW = "manual_review"
+def calculate_text_quality(text: str) -> float:
+    """간단한 텍스트 품질 점수 (0.0 ~ 1.0)"""
+    if not text or len(text) < 10:
+        return 0.0
+
+    # 알파벳/숫자 비율
+    alnum_count = sum(1 for c in text if c.isalnum())
+    alnum_ratio = alnum_count / len(text) if text else 0
+
+    # 공백 비율 (너무 많으면 품질 낮음)
+    space_ratio = text.count(' ') / len(text) if text else 0
+    space_penalty = max(0, space_ratio - 0.3) * 2
+
+    # 특수문자 비율 (너무 많으면 품질 낮음)
+    special_count = sum(1 for c in text if not c.isalnum() and not c.isspace())
+    special_ratio = special_count / len(text) if text else 0
+    special_penalty = max(0, special_ratio - 0.1) * 3
+
+    quality = alnum_ratio - space_penalty - special_penalty
+    return max(0.0, min(1.0, quality))
 
 
-class DocumentStatus(Enum):
-    """문서 처리 상태"""
-    PENDING = "pending"
-    SCANNING = "scanning"
-    SCANNED = "scanned"
-    PROCESSING = "processing"
-    COMPLETED = "completed"
-    FAILED = "failed"
-    PARTIAL = "partial"
+@dataclass
+class PageTask:
+    """페이지 처리 작업"""
+    pdf_path: str
+    page_num: int
+    doc_id: str
 
 
 @dataclass
 class PageResult:
     """페이지 처리 결과"""
-    page_num: int
-    status: PageStatus
-    strategy: ProcessingStrategy
-    quality_score: float
-    text: str = ""
-    ocr_engine: Optional[str] = None
-    ocr_confidence: float = 0.0
-    retry_count: int = 0
-    error_message: str = ""
-    processed_at: Optional[str] = None
-    # v2.1: 비교 결과 필드
-    embedded_quality: float = 0.0      # 내장 텍스트 품질
-    ocr_quality: float = 0.0           # OCR 텍스트 품질
-    similarity: float = 0.0            # 내장 vs OCR 유사도
-    text_source: str = ""              # "embedded" | "ocr" | "skip"
-
-
-@dataclass
-class DocumentResult:
-    """문서 처리 결과"""
     doc_id: str
-    pdf_path: str
-    status: DocumentStatus
-    total_pages: int
-    pages: List[PageResult] = field(default_factory=list)
-    tier: DocumentTier = DocumentTier.TIER3
-    started_at: Optional[str] = None
-    completed_at: Optional[str] = None
-    error_message: str = ""
-    # MANUAL_REVIEW 페이지 목록 (메타데이터로 분리 - 본문 오염 방지)
-    manual_review_pages: List[int] = field(default_factory=list)
+    page_num: int
+    success: bool
+    text: str = ""
+    source: str = ""  # "embedded" | "ocr" | "skip"
+    quality: float = 0.0
+    confidence: float = 0.0
+    error: str = ""
+    processing_time: float = 0.0
 
-    def to_dict(self) -> dict:
+
+def process_page(task_dict: dict) -> dict:
+    """단일 페이지 처리 (워커에서 실행)"""
+    global _ocr_engine
+
+    start_time = time.time()
+    pdf_path = task_dict['pdf_path']
+    page_num = task_dict['page_num']
+    doc_id = task_dict['doc_id']
+
+    try:
+        # PDF 열기
+        doc = fitz.open(pdf_path)
+        page = doc[page_num]
+
+        # 1. 내장 텍스트 추출
+        embedded_text = page.get_text("text").strip()
+        embedded_quality = calculate_text_quality(embedded_text)
+
+        # 2. 내장 텍스트 품질 충분하면 OCR 스킵
+        if len(embedded_text) >= MIN_TEXT_LENGTH and embedded_quality >= MIN_TEXT_QUALITY:
+            doc.close()
+            return {
+                'doc_id': doc_id,
+                'page_num': page_num,
+                'success': True,
+                'text': embedded_text,
+                'source': 'embedded',
+                'quality': embedded_quality,
+                'confidence': 1.0,
+                'processing_time': time.time() - start_time,
+            }
+
+        # 3. 빈 페이지 체크
+        if len(embedded_text) < 10:
+            # 이미지로 변환해서 OCR
+            pix = page.get_pixmap(dpi=DPI)
+            img_path = f"/tmp/ocr_{os.getpid()}_{page_num}.png"
+            pix.save(img_path)
+
+            result = _ocr_engine.predict(img_path)
+            os.remove(img_path)
+
+            if not result or not result[0].get('rec_texts'):
+                doc.close()
+                return {
+                    'doc_id': doc_id,
+                    'page_num': page_num,
+                    'success': True,
+                    'text': '',
+                    'source': 'skip',
+                    'quality': 0.0,
+                    'confidence': 0.0,
+                    'processing_time': time.time() - start_time,
+                }
+
+            # OCR 결과 사용
+            res = result[0]
+            ocr_text = "\n".join(res.get('rec_texts', []))
+            ocr_scores = res.get('rec_scores', [])
+            avg_conf = sum(ocr_scores) / len(ocr_scores) if ocr_scores else 0.0
+
+            doc.close()
+            return {
+                'doc_id': doc_id,
+                'page_num': page_num,
+                'success': True,
+                'text': ocr_text,
+                'source': 'ocr',
+                'quality': calculate_text_quality(ocr_text),
+                'confidence': avg_conf,
+                'processing_time': time.time() - start_time,
+            }
+
+        # 4. 내장 텍스트 품질 낮음 → OCR 시도
+        pix = page.get_pixmap(dpi=DPI)
+        img_path = f"/tmp/ocr_{os.getpid()}_{page_num}.png"
+        pix.save(img_path)
+
+        result = _ocr_engine.predict(img_path)
+        os.remove(img_path)
+
+        if not result or not result[0].get('rec_texts'):
+            # OCR 실패 → 내장 텍스트 사용
+            doc.close()
+            return {
+                'doc_id': doc_id,
+                'page_num': page_num,
+                'success': True,
+                'text': embedded_text,
+                'source': 'embedded',
+                'quality': embedded_quality,
+                'confidence': 1.0,
+                'processing_time': time.time() - start_time,
+            }
+
+        res = result[0]
+        ocr_text = "\n".join(res.get('rec_texts', []))
+        ocr_scores = res.get('rec_scores', [])
+        avg_conf = sum(ocr_scores) / len(ocr_scores) if ocr_scores else 0.0
+        ocr_quality = calculate_text_quality(ocr_text)
+
+        # 5. 더 나은 결과 선택
+        if ocr_quality > embedded_quality:
+            final_text = ocr_text
+            source = 'ocr'
+            quality = ocr_quality
+            confidence = avg_conf
+        else:
+            final_text = embedded_text
+            source = 'embedded'
+            quality = embedded_quality
+            confidence = 1.0
+
+        doc.close()
         return {
-            "doc_id": self.doc_id,
-            "pdf_path": self.pdf_path,
-            "status": self.status.value,
-            "total_pages": self.total_pages,
-            "tier": self.tier.value,
-            "started_at": self.started_at,
-            "completed_at": self.completed_at,
-            "pages_completed": sum(1 for p in self.pages if p.status == PageStatus.COMPLETED),
-            "pages_failed": sum(1 for p in self.pages if p.status == PageStatus.FAILED),
-            "pages_manual_review": len(self.manual_review_pages),
-            "manual_review_pages": self.manual_review_pages,
+            'doc_id': doc_id,
+            'page_num': page_num,
+            'success': True,
+            'text': final_text,
+            'source': source,
+            'quality': quality,
+            'confidence': confidence,
+            'processing_time': time.time() - start_time,
+        }
+
+    except Exception as e:
+        return {
+            'doc_id': doc_id,
+            'page_num': page_num,
+            'success': False,
+            'error': str(e),
+            'processing_time': time.time() - start_time,
         }
 
 
-class CheckpointManager:
-    """체크포인트 관리 (진행 상태 저장/복구)"""
+class OCRPipeline:
+    """고속 OCR 파이프라인"""
 
-    def __init__(self, checkpoint_dir: Path):
-        self.checkpoint_dir = Path(checkpoint_dir)
-        self.checkpoint_dir.mkdir(parents=True, exist_ok=True)
-        self.db_path = self.checkpoint_dir / "checkpoint.db"
+    def __init__(
+        self,
+        pdf_dir: str | Path,
+        output_dir: str | Path,
+        num_workers: int = 4,
+        shard: int = 0,
+        total_shards: int = 1,
+    ):
+        self.pdf_dir = Path(pdf_dir)
+        self.output_dir = Path(output_dir)
+        self.num_workers = num_workers
+        self.shard = shard
+        self.total_shards = total_shards
+
+        # 디렉토리 생성
+        self.output_dir.mkdir(parents=True, exist_ok=True)
+        (self.output_dir / "text").mkdir(exist_ok=True)
+        (self.output_dir / "checkpoints").mkdir(exist_ok=True)
+
+        # DB 초기화
+        self.db_path = self.output_dir / "checkpoints" / f"pipeline_shard{shard}.db"
         self._init_db()
+
+        logger.info(f"OCRPipeline 초기화")
+        logger.info(f"  PDF 디렉토리: {self.pdf_dir}")
+        logger.info(f"  출력 디렉토리: {self.output_dir}")
+        logger.info(f"  워커 수: {self.num_workers}")
+        logger.info(f"  샤드: {self.shard}/{self.total_shards}")
 
     def _init_db(self):
         """SQLite DB 초기화"""
         conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-
-        cursor.execute("""
+        conn.execute("PRAGMA journal_mode=WAL")
+        conn.execute("""
             CREATE TABLE IF NOT EXISTS documents (
                 doc_id TEXT PRIMARY KEY,
                 pdf_path TEXT,
-                status TEXT,
                 total_pages INTEGER,
-                tier INTEGER,
+                completed_pages INTEGER DEFAULT 0,
+                status TEXT DEFAULT 'pending',
                 started_at TEXT,
-                completed_at TEXT,
-                error_message TEXT,
-                result_json TEXT
+                completed_at TEXT
             )
         """)
-
-        cursor.execute("""
+        conn.execute("""
             CREATE TABLE IF NOT EXISTS pages (
                 doc_id TEXT,
                 page_num INTEGER,
-                status TEXT,
-                strategy TEXT,
-                quality_score REAL,
-                ocr_engine TEXT,
-                ocr_confidence REAL,
-                retry_count INTEGER,
-                error_message TEXT,
+                text TEXT,
+                source TEXT,
+                quality REAL,
+                confidence REAL,
+                status TEXT DEFAULT 'pending',
+                error TEXT,
+                processing_time REAL,
                 processed_at TEXT,
-                embedded_quality REAL DEFAULT 0,
-                ocr_quality REAL DEFAULT 0,
-                similarity REAL DEFAULT 0,
-                text_source TEXT DEFAULT '',
-                raw_text TEXT DEFAULT '',
                 PRIMARY KEY (doc_id, page_num)
             )
         """)
+        conn.commit()
+        conn.close()
 
-        # 구조화된 문서 테이블 (Phase 2: 구조화 후 저장)
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS structured_documents (
-                doc_id TEXT PRIMARY KEY,
-                doc_type TEXT,
-                doc_number TEXT,
-                doc_year INTEGER,
-                doc_title TEXT,
-                structured_json TEXT,
-                created_at TEXT,
-                updated_at TEXT,
-                FOREIGN KEY (doc_id) REFERENCES documents(doc_id)
+    def scan_pdfs(self) -> List[Path]:
+        """PDF 파일 스캔 (other 폴더 제외)"""
+        pdfs = []
+        for pdf_path in sorted(self.pdf_dir.rglob("*.pdf")):
+            # other 폴더 제외
+            if '/other/' in str(pdf_path) or '\\other\\' in str(pdf_path):
+                continue
+            pdfs.append(pdf_path)
+
+        # 샤딩
+        if self.total_shards > 1:
+            pdfs = [p for i, p in enumerate(pdfs) if i % self.total_shards == self.shard]
+
+        return pdfs
+
+    def generate_doc_id(self, pdf_path: Path) -> str:
+        """문서 ID 생성"""
+        try:
+            rel_path = pdf_path.relative_to(self.pdf_dir)
+            return str(rel_path.with_suffix('')).replace('/', '__').replace('\\', '__')
+        except ValueError:
+            return pdf_path.stem
+
+    def get_pending_documents(self) -> List[dict]:
+        """미처리 문서 목록"""
+        conn = sqlite3.connect(self.db_path)
+        conn.row_factory = sqlite3.Row
+        rows = conn.execute("""
+            SELECT doc_id, pdf_path, total_pages
+            FROM documents
+            WHERE status != 'completed'
+        """).fetchall()
+        conn.close()
+        return [dict(row) for row in rows]
+
+    def register_documents(self, pdfs: List[Path]):
+        """문서 등록"""
+        conn = sqlite3.connect(self.db_path)
+
+        for pdf_path in pdfs:
+            doc_id = self.generate_doc_id(pdf_path)
+
+            # 이미 등록된 문서 스킵
+            row = conn.execute(
+                "SELECT doc_id FROM documents WHERE doc_id = ?",
+                (doc_id,)
+            ).fetchone()
+            if row:
+                continue
+
+            # 페이지 수 확인
+            try:
+                doc = fitz.open(pdf_path)
+                total_pages = len(doc)
+                doc.close()
+            except:
+                total_pages = 0
+
+            conn.execute("""
+                INSERT INTO documents (doc_id, pdf_path, total_pages, status, started_at)
+                VALUES (?, ?, ?, 'pending', ?)
+            """, (doc_id, str(pdf_path), total_pages, datetime.now().isoformat()))
+
+        conn.commit()
+        conn.close()
+
+    def get_tasks(self, limit: Optional[int] = None) -> List[dict]:
+        """처리할 작업 목록 생성"""
+        conn = sqlite3.connect(self.db_path)
+        conn.row_factory = sqlite3.Row
+
+        # 미완료 문서의 미처리 페이지
+        query = """
+            SELECT d.doc_id, d.pdf_path, d.total_pages
+            FROM documents d
+            WHERE d.status != 'completed'
+            ORDER BY d.doc_id
+        """
+        docs = conn.execute(query).fetchall()
+
+        tasks = []
+        for doc in docs:
+            doc_id = doc['doc_id']
+            pdf_path = doc['pdf_path']
+            total_pages = doc['total_pages']
+
+            # 완료된 페이지 조회
+            completed = conn.execute("""
+                SELECT page_num FROM pages
+                WHERE doc_id = ? AND status = 'completed'
+            """, (doc_id,)).fetchall()
+            completed_pages = {row['page_num'] for row in completed}
+
+            # 미처리 페이지 추가
+            for page_num in range(total_pages):
+                if page_num not in completed_pages:
+                    tasks.append({
+                        'doc_id': doc_id,
+                        'pdf_path': pdf_path,
+                        'page_num': page_num,
+                    })
+
+            if limit and len(tasks) >= limit:
+                break
+
+        conn.close()
+
+        if limit:
+            tasks = tasks[:limit]
+
+        return tasks
+
+    def save_results(self, results: List[dict]):
+        """결과 저장"""
+        conn = sqlite3.connect(self.db_path)
+
+        for result in results:
+            doc_id = result['doc_id']
+            page_num = result['page_num']
+
+            if result.get('success'):
+                conn.execute("""
+                    INSERT OR REPLACE INTO pages
+                    (doc_id, page_num, text, source, quality, confidence, status, processing_time, processed_at)
+                    VALUES (?, ?, ?, ?, ?, ?, 'completed', ?, ?)
+                """, (
+                    doc_id, page_num,
+                    result.get('text', ''),
+                    result.get('source', ''),
+                    result.get('quality', 0.0),
+                    result.get('confidence', 0.0),
+                    result.get('processing_time', 0.0),
+                    datetime.now().isoformat(),
+                ))
+            else:
+                conn.execute("""
+                    INSERT OR REPLACE INTO pages
+                    (doc_id, page_num, status, error, processing_time, processed_at)
+                    VALUES (?, ?, 'failed', ?, ?, ?)
+                """, (
+                    doc_id, page_num,
+                    result.get('error', ''),
+                    result.get('processing_time', 0.0),
+                    datetime.now().isoformat(),
+                ))
+
+        conn.commit()
+        conn.close()
+
+    def update_document_status(self):
+        """문서 상태 업데이트"""
+        conn = sqlite3.connect(self.db_path)
+
+        # 모든 페이지 완료된 문서 찾기
+        conn.execute("""
+            UPDATE documents SET
+                status = 'completed',
+                completed_pages = (
+                    SELECT COUNT(*) FROM pages
+                    WHERE pages.doc_id = documents.doc_id AND pages.status = 'completed'
+                ),
+                completed_at = ?
+            WHERE doc_id IN (
+                SELECT d.doc_id FROM documents d
+                WHERE d.status != 'completed'
+                AND d.total_pages = (
+                    SELECT COUNT(*) FROM pages p
+                    WHERE p.doc_id = d.doc_id AND p.status = 'completed'
+                )
+            )
+        """, (datetime.now().isoformat(),))
+
+        # 진행 중 문서 업데이트
+        conn.execute("""
+            UPDATE documents SET
+                status = 'processing',
+                completed_pages = (
+                    SELECT COUNT(*) FROM pages
+                    WHERE pages.doc_id = documents.doc_id AND pages.status = 'completed'
+                )
+            WHERE status = 'pending'
+            AND doc_id IN (
+                SELECT DISTINCT doc_id FROM pages WHERE status = 'completed'
             )
         """)
 
-        # 구조화된 섹션 테이블 (Bab, Pasal, Ayat 등)
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS structured_sections (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                doc_id TEXT,
-                section_type TEXT,
-                section_number TEXT,
-                parent_id INTEGER,
-                content TEXT,
-                sequence_order INTEGER,
-                created_at TEXT,
-                FOREIGN KEY (doc_id) REFERENCES documents(doc_id),
-                FOREIGN KEY (parent_id) REFERENCES structured_sections(id)
-            )
-        """)
-
         conn.commit()
         conn.close()
 
-    def save_document(self, result: DocumentResult):
-        """문서 상태 저장"""
+    def export_text(self):
+        """완료된 문서 텍스트 내보내기"""
         conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        conn.row_factory = sqlite3.Row
 
-        cursor.execute("""
-            INSERT OR REPLACE INTO documents
-            (doc_id, pdf_path, status, total_pages, tier, started_at, completed_at, error_message, result_json)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (
-            result.doc_id,
-            result.pdf_path,
-            result.status.value,
-            result.total_pages,
-            result.tier.value,
-            result.started_at,
-            result.completed_at,
-            result.error_message,
-            json.dumps(result.to_dict()),
-        ))
+        # 완료된 문서
+        docs = conn.execute("""
+            SELECT doc_id FROM documents WHERE status = 'completed'
+        """).fetchall()
 
-        conn.commit()
+        for doc in docs:
+            doc_id = doc['doc_id']
+            output_path = self.output_dir / "text" / f"{doc_id}.txt"
+
+            if output_path.exists():
+                continue
+
+            # 페이지 텍스트 조회
+            pages = conn.execute("""
+                SELECT text FROM pages
+                WHERE doc_id = ? AND status = 'completed'
+                ORDER BY page_num
+            """, (doc_id,)).fetchall()
+
+            texts = [p['text'] for p in pages if p['text']]
+
+            with open(output_path, 'w', encoding='utf-8') as f:
+                f.write("\n\n--- PAGE BREAK ---\n\n".join(texts))
+
         conn.close()
-
-    def save_page(self, doc_id: str, page: PageResult):
-        """페이지 상태 및 텍스트 저장"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-
-        cursor.execute("""
-            INSERT OR REPLACE INTO pages
-            (doc_id, page_num, status, strategy, quality_score, ocr_engine, ocr_confidence,
-             retry_count, error_message, processed_at, embedded_quality, ocr_quality, similarity, text_source, raw_text)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (
-            doc_id,
-            page.page_num,
-            page.status.value,
-            page.strategy.value,
-            page.quality_score,
-            page.ocr_engine,
-            page.ocr_confidence,
-            page.retry_count,
-            page.error_message,
-            page.processed_at,
-            page.embedded_quality,
-            page.ocr_quality,
-            page.similarity,
-            page.text_source,
-            page.text,  # raw_text 저장
-        ))
-
-        conn.commit()
-        conn.close()
-
-    def get_document_status(self, doc_id: str) -> Optional[str]:
-        """문서 상태 조회"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-
-        cursor.execute("SELECT status FROM documents WHERE doc_id = ?", (doc_id,))
-        row = cursor.fetchone()
-        conn.close()
-
-        return row[0] if row else None
-
-    def get_pending_pages(self, doc_id: str) -> List[int]:
-        """미처리 페이지 번호 조회"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-
-        cursor.execute("""
-            SELECT page_num FROM pages
-            WHERE doc_id = ? AND status IN ('pending', 'failed')
-            ORDER BY page_num
-        """, (doc_id,))
-
-        pages = [row[0] for row in cursor.fetchall()]
-        conn.close()
-
-        return pages
 
     def get_stats(self) -> dict:
-        """전체 통계"""
+        """통계 조회"""
         conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
 
-        cursor.execute("SELECT status, COUNT(*) FROM documents GROUP BY status")
-        doc_stats = dict(cursor.fetchall())
+        doc_stats = dict(conn.execute("""
+            SELECT status, COUNT(*) FROM documents GROUP BY status
+        """).fetchall())
 
-        cursor.execute("SELECT status, COUNT(*) FROM pages GROUP BY status")
-        page_stats = dict(cursor.fetchall())
+        page_stats = dict(conn.execute("""
+            SELECT status, COUNT(*) FROM pages GROUP BY status
+        """).fetchall())
+
+        source_stats = dict(conn.execute("""
+            SELECT source, COUNT(*) FROM pages WHERE status = 'completed' GROUP BY source
+        """).fetchall())
+
+        total_pages = conn.execute("SELECT SUM(total_pages) FROM documents").fetchone()[0] or 0
+        completed_pages = page_stats.get('completed', 0)
 
         conn.close()
 
         return {
-            "documents": doc_stats,
-            "pages": page_stats,
+            'documents': doc_stats,
+            'pages': page_stats,
+            'sources': source_stats,
+            'total_pages': total_pages,
+            'completed_pages': completed_pages,
+            'progress': completed_pages / total_pages if total_pages > 0 else 0,
         }
 
-    def get_page_text(self, doc_id: str, page_num: int) -> Optional[str]:
-        """특정 페이지 텍스트 조회"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+    def run(self, limit: Optional[int] = None, save_interval: int = 50):
+        """파이프라인 실행"""
+        logger.info("=== OCRPipeline 시작 ===")
 
-        cursor.execute(
-            "SELECT raw_text FROM pages WHERE doc_id = ? AND page_num = ?",
-            (doc_id, page_num)
-        )
-        row = cursor.fetchone()
-        conn.close()
+        # 1. PDF 스캔 및 등록
+        pdfs = self.scan_pdfs()
+        logger.info(f"PDF 스캔 완료: {len(pdfs)}개")
 
-        return row[0] if row else None
+        self.register_documents(pdfs)
 
-    def get_document_text(self, doc_id: str) -> str:
-        """문서 전체 텍스트 조회 (페이지 순서대로)"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        # 2. 작업 목록 생성
+        tasks = self.get_tasks(limit=limit)
+        if not tasks:
+            logger.info("처리할 페이지가 없습니다")
+            return self.get_stats()
 
-        cursor.execute("""
-            SELECT raw_text FROM pages
-            WHERE doc_id = ? AND raw_text IS NOT NULL AND raw_text != ''
-            ORDER BY page_num
-        """, (doc_id,))
+        total_tasks = len(tasks)
+        logger.info(f"처리할 페이지: {total_tasks}개")
 
-        texts = [row[0] for row in cursor.fetchall()]
-        conn.close()
+        # 3. 멀티프로세스 처리
+        start_time = time.time()
+        processed = 0
+        failed = 0
 
-        return "\n\n--- PAGE BREAK ---\n\n".join(texts)
+        with Pool(self.num_workers, initializer=init_worker) as pool:
+            results_buffer = []
 
-    def get_all_documents(self) -> List[dict]:
-        """모든 문서 목록 조회"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+            for i, result in enumerate(pool.imap_unordered(process_page, tasks, chunksize=5)):
+                results_buffer.append(result)
 
-        cursor.execute("""
-            SELECT doc_id, pdf_path, status, total_pages, tier, started_at, completed_at
-            FROM documents ORDER BY started_at DESC
-        """)
+                if result.get('success'):
+                    processed += 1
+                else:
+                    failed += 1
 
-        columns = ['doc_id', 'pdf_path', 'status', 'total_pages', 'tier', 'started_at', 'completed_at']
-        documents = [dict(zip(columns, row)) for row in cursor.fetchall()]
-        conn.close()
+                # 주기적 저장
+                if len(results_buffer) >= save_interval:
+                    self.save_results(results_buffer)
+                    results_buffer = []
 
-        return documents
+                    elapsed = time.time() - start_time
+                    done = i + 1
+                    speed = done / elapsed
+                    remaining = (total_tasks - done) / speed if speed > 0 else 0
 
-    def save_structured_document(self, doc_id: str, doc_type: str, doc_number: str,
-                                  doc_year: int, doc_title: str, structured_json: str):
-        """구조화된 문서 저장"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+                    logger.info(
+                        f"진행: {done}/{total_tasks} ({done/total_tasks*100:.1f}%) | "
+                        f"{speed:.2f} pages/sec | "
+                        f"성공: {processed} | 실패: {failed} | "
+                        f"남은 시간: {remaining/3600:.1f}시간"
+                    )
 
-        now = datetime.now().isoformat()
-        cursor.execute("""
-            INSERT OR REPLACE INTO structured_documents
-            (doc_id, doc_type, doc_number, doc_year, doc_title, structured_json, created_at, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        """, (doc_id, doc_type, doc_number, doc_year, doc_title, structured_json, now, now))
+            # 남은 결과 저장
+            if results_buffer:
+                self.save_results(results_buffer)
 
-        conn.commit()
-        conn.close()
+        # 4. 문서 상태 업데이트 및 텍스트 내보내기
+        self.update_document_status()
+        self.export_text()
 
-    def save_structured_section(self, doc_id: str, section_type: str, section_number: str,
-                                 parent_id: Optional[int], content: str, sequence_order: int) -> int:
-        """구조화된 섹션 저장 (Bab, Pasal, Ayat 등)"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+        # 5. 최종 통계
+        elapsed = time.time() - start_time
+        stats = self.get_stats()
+        stats['elapsed_sec'] = elapsed
+        stats['pages_per_sec'] = total_tasks / elapsed if elapsed > 0 else 0
 
-        now = datetime.now().isoformat()
-        cursor.execute("""
-            INSERT INTO structured_sections
-            (doc_id, section_type, section_number, parent_id, content, sequence_order, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-        """, (doc_id, section_type, section_number, parent_id, content, sequence_order, now))
+        logger.info(f"\n=== 처리 완료 ===")
+        logger.info(f"총 페이지: {total_tasks}")
+        logger.info(f"성공: {processed}, 실패: {failed}")
+        logger.info(f"처리 시간: {elapsed/3600:.2f}시간")
+        logger.info(f"속도: {stats['pages_per_sec']:.2f} pages/sec")
+        logger.info(f"소스 분포: {stats['sources']}")
 
-        section_id = cursor.lastrowid
-        conn.commit()
-        conn.close()
-
-        return section_id
-
-    def get_structured_document(self, doc_id: str) -> Optional[dict]:
-        """구조화된 문서 조회"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-
-        cursor.execute("""
-            SELECT doc_id, doc_type, doc_number, doc_year, doc_title, structured_json
-            FROM structured_documents WHERE doc_id = ?
-        """, (doc_id,))
-
-        row = cursor.fetchone()
-        conn.close()
-
-        if row:
-            return {
-                'doc_id': row[0],
-                'doc_type': row[1],
-                'doc_number': row[2],
-                'doc_year': row[3],
-                'doc_title': row[4],
-                'structured_json': row[5],
-            }
-        return None
-
-    def get_structured_sections(self, doc_id: str) -> List[dict]:
-        """문서의 모든 구조화된 섹션 조회"""
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
-
-        cursor.execute("""
-            SELECT id, section_type, section_number, parent_id, content, sequence_order
-            FROM structured_sections
-            WHERE doc_id = ?
-            ORDER BY sequence_order
-        """, (doc_id,))
-
-        columns = ['id', 'section_type', 'section_number', 'parent_id', 'content', 'sequence_order']
-        sections = [dict(zip(columns, row)) for row in cursor.fetchall()]
-        conn.close()
-
-        return sections
+        return stats
 
 
-class OCRPipeline:
-    """
-    OCR 파이프라인 메인 클래스 (하이브리드 v2)
+def main():
+    import argparse
 
-    전략:
-    - 텍스트 추출 시도 → 품질 검사
-    - 품질 >= 임계치: 텍스트 사용 (빠름)
-    - 품질 < 임계치: 이미지 → OCR (일관된 품질)
+    parser = argparse.ArgumentParser(description="Fast OCR Pipeline")
+    subparsers = parser.add_subparsers(dest='command', help='Commands')
 
-    사용법:
+    # run 명령
+    run_parser = subparsers.add_parser('run', help='Run pipeline')
+    run_parser.add_argument('--pdf-dir', '-p', default=os.path.expanduser('~/cor/peraturan/data/pdfs'),
+                           help='PDF directory')
+    run_parser.add_argument('--output-dir', '-o', default=os.path.expanduser('~/cor/ocr_output'),
+                           help='Output directory')
+    run_parser.add_argument('--workers', '-w', type=int, default=4, help='Number of workers')
+    run_parser.add_argument('--limit', '-l', type=int, help='Max pages to process')
+    run_parser.add_argument('--shard', type=int, default=0, help='Shard index (for distributed processing)')
+    run_parser.add_argument('--total-shards', type=int, default=1, help='Total shards')
+
+    # stats 명령
+    stats_parser = subparsers.add_parser('stats', help='Show statistics')
+    stats_parser.add_argument('--output-dir', '-o', default=os.path.expanduser('~/cor/ocr_output'),
+                             help='Output directory')
+    stats_parser.add_argument('--shard', type=int, default=0, help='Shard index')
+
+    args = parser.parse_args()
+
+    if args.command == 'run':
         pipeline = OCRPipeline(
-            input_dir="/path/to/pdfs",
-            output_dir="/path/to/output",
+            pdf_dir=args.pdf_dir,
+            output_dir=args.output_dir,
+            num_workers=args.workers,
+            shard=args.shard,
+            total_shards=args.total_shards,
         )
-        pipeline.run()
-    """
+        pipeline.run(limit=args.limit)
 
-    MAX_RETRIES = 3  # 최대 재처리 횟수
-    QUALITY_THRESHOLD = 0.92  # 이 점수 이상이면 텍스트 사용, 미만이면 OCR
-
-    def __init__(
-        self,
-        input_dir: str | Path,
-        output_dir: str | Path,
-        checkpoint_dir: Optional[str | Path] = None,
-        use_gpu: bool = True,
-        batch_size: int = 10,
-        num_workers: int = 4,
-    ):
-        """
-        Args:
-            input_dir: PDF 입력 디렉토리
-            output_dir: 결과 출력 디렉토리
-            checkpoint_dir: 체크포인트 디렉토리 (기본: output_dir/checkpoints)
-            use_gpu: GPU 사용 여부
-            batch_size: 배치 크기 (한 번에 처리할 페이지 수)
-            num_workers: 병렬 워커 수 (GPU 활용도 향상)
-        """
-        self.input_dir = Path(input_dir)
-        self.output_dir = Path(output_dir)
-        self.checkpoint_dir = Path(checkpoint_dir) if checkpoint_dir else self.output_dir / "checkpoints"
-        self.use_gpu = use_gpu
-        self.batch_size = batch_size
-        self.num_workers = num_workers
-
-        # 디렉토리 생성
-        self.output_dir.mkdir(parents=True, exist_ok=True)
-        self.checkpoint_dir.mkdir(parents=True, exist_ok=True)
-        (self.output_dir / "xml").mkdir(exist_ok=True)
-        (self.output_dir / "text").mkdir(exist_ok=True)
-        (self.output_dir / "manual_review").mkdir(exist_ok=True)
-        (self.output_dir / "logs").mkdir(exist_ok=True)
-
-        # 컴포넌트 초기화
-        self.dictionary = IndonesianDictionary()
-        self.quality_scorer = QualityScorer(dictionary=self.dictionary)
-        self.ocr_engine = EnsembleOCR(
-            use_gpu=use_gpu,
-            quality_scorer=self.quality_scorer,
+    elif args.command == 'stats':
+        pipeline = OCRPipeline(
+            pdf_dir='.',  # dummy
+            output_dir=args.output_dir,
+            shard=args.shard,
         )
-        self.checkpoint = CheckpointManager(self.checkpoint_dir)
+        stats = pipeline.get_stats()
+        print(json.dumps(stats, indent=2))
 
-        logger.info(f"OCR 파이프라인 초기화 완료")
-        logger.info(f"  입력: {self.input_dir}")
-        logger.info(f"  출력: {self.output_dir}")
-        logger.info(f"  GPU: {self.use_gpu}")
+    else:
+        parser.print_help()
 
-    def scan_pdfs(self) -> Iterator[Path]:
-        """PDF 파일 스캔"""
-        for pdf_path in sorted(self.input_dir.rglob("*.pdf")):
-            yield pdf_path
 
-    def get_document_tier(self, pdf_path: Path) -> DocumentTier:
-        """문서 티어 결정"""
-        name = pdf_path.stem.lower()
-
-        if name.startswith("uu-") or "/uu/" in str(pdf_path):
-            return DocumentTier.TIER1
-        elif name.startswith(("pp-", "perpres-")) or any(x in str(pdf_path) for x in ["/pp/", "/perpres/"]):
-            return DocumentTier.TIER2
-        else:
-            return DocumentTier.TIER3
-
-    def _generate_doc_id(self, pdf_path: Path) -> str:
-        """
-        고유한 문서 ID 생성 (폴더 충돌 방지)
-
-        예: uu/uu-no-1-tahun-2020.pdf → uu__uu-no-1-tahun-2020
-        """
-        try:
-            rel_path = pdf_path.relative_to(self.input_dir)
-            # 경로 구분자를 __로 대체, 확장자 제거
-            doc_id = str(rel_path.with_suffix('')).replace('/', '__').replace('\\', '__')
-        except ValueError:
-            # input_dir 외부 파일인 경우 stem만 사용
-            doc_id = pdf_path.stem
-        return doc_id
-
-    def process_document(self, pdf_path: Path) -> DocumentResult:
-        """
-        단일 문서 처리
-
-        Args:
-            pdf_path: PDF 파일 경로
-
-        Returns:
-            DocumentResult: 처리 결과
-        """
-        doc_id = self._generate_doc_id(pdf_path)
-        logger.info(f"문서 처리 시작: {doc_id}")
-
-        # 이미 완료된 문서 스킵
-        existing_status = self.checkpoint.get_document_status(doc_id)
-        if existing_status == DocumentStatus.COMPLETED.value:
-            logger.info(f"이미 완료된 문서 스킵: {doc_id}")
-            return None
-
-        # PDF 열기
-        try:
-            doc = fitz.open(pdf_path)
-        except Exception as e:
-            logger.error(f"PDF 열기 실패: {pdf_path} - {e}")
-            result = DocumentResult(
-                doc_id=doc_id,
-                pdf_path=str(pdf_path),
-                status=DocumentStatus.FAILED,
-                total_pages=0,
-                error_message=str(e),
-            )
-            self.checkpoint.save_document(result)
-            return result
-
-        # 문서 결과 초기화
-        result = DocumentResult(
-            doc_id=doc_id,
-            pdf_path=str(pdf_path),
-            status=DocumentStatus.PROCESSING,
-            total_pages=len(doc),
-            tier=self.get_document_tier(pdf_path),
-            started_at=datetime.now().isoformat(),
-        )
-        self.checkpoint.save_document(result)
-
-        # 페이지별 처리 (재시도 포함)
-        # High Fix: try-finally로 doc.close() 보장
-        all_text = []
-        manual_review_pages = []  # MANUAL_REVIEW 페이지 추적
-
-        try:
-            for page_num in range(len(doc)):
-                page_result = None
-                attempt = 0
-
-                # 최대 3회 시도
-                # High Fix: _process_page 호출을 try-except로 감싸기
-                while attempt < self.MAX_RETRIES:
-                    attempt += 1
-                    try:
-                        page_result = self._process_page(doc, page_num, doc_id)
-                    except Exception as e:
-                        logger.error(f"페이지 처리 예외: {doc_id} p.{page_num} - {e}")
-                        page_result = PageResult(
-                            page_num=page_num,
-                            status=PageStatus.FAILED,
-                            strategy=ProcessingStrategy.OCR,
-                            quality_score=0.0,
-                            error_message=str(e),
-                            processed_at=datetime.now().isoformat(),
-                        )
-
-                    # 성공 또는 수동 검토면 종료
-                    if page_result.status in [PageStatus.COMPLETED, PageStatus.MANUAL_REVIEW]:
-                        break
-
-                    # 실패면 재시도
-                    if attempt < self.MAX_RETRIES:
-                        logger.warning(f"페이지 재시도 {attempt}/{self.MAX_RETRIES}: {doc_id} p.{page_num}")
-
-                # 최종 시도 횟수 기록 (1-based)
-                page_result.retry_count = attempt
-
-                result.pages.append(page_result)
-                self.checkpoint.save_page(doc_id, page_result)
-
-                # MANUAL_REVIEW 페이지도 본문에 포함하되, 메타데이터로 플래그 유지
-                # - 본문은 유지 (후처리에서 선택적 필터링 가능)
-                # - 페이지 번호는 manual_review_pages로 별도 기록
-                # - 필요시 PageResult에서 개별 텍스트 접근 가능
-                if page_result.status == PageStatus.COMPLETED:
-                    all_text.append(page_result.text)
-                elif page_result.status == PageStatus.MANUAL_REVIEW:
-                    manual_review_pages.append(page_num)
-                    all_text.append(page_result.text)
-
-        finally:
-            # High Fix: 예외 발생해도 doc.close() 보장
-            doc.close()
-
-        # 문서 완료 상태 결정
-        # Medium Fix: MANUAL_REVIEW는 실패가 아닌 별도 상태로 처리
-        completed = sum(1 for p in result.pages if p.status == PageStatus.COMPLETED)
-        manual_review = sum(1 for p in result.pages if p.status == PageStatus.MANUAL_REVIEW)
-        failed = sum(1 for p in result.pages if p.status == PageStatus.FAILED)
-
-        if failed == 0 and manual_review == 0:
-            result.status = DocumentStatus.COMPLETED
-        elif failed == 0 and manual_review > 0:
-            # MANUAL_REVIEW만 있으면 PARTIAL (텍스트는 포함됨)
-            result.status = DocumentStatus.PARTIAL
-        elif completed > 0 or manual_review > 0:
-            result.status = DocumentStatus.PARTIAL
-        else:
-            result.status = DocumentStatus.FAILED
-
-        # MANUAL_REVIEW 페이지 목록 저장 (메타데이터로 분리)
-        result.manual_review_pages = manual_review_pages
-        result.completed_at = datetime.now().isoformat()
-        self.checkpoint.save_document(result)
-
-        # 텍스트 저장
-        if all_text:
-            text_path = self.output_dir / "text" / f"{doc_id}.txt"
-            with open(text_path, 'w', encoding='utf-8') as f:
-                f.write("\n\n--- PAGE BREAK ---\n\n".join(all_text))
-
-        logger.info(f"문서 처리 완료: {doc_id} - {result.status.value}")
-        return result
-
-    def _calculate_similarity(self, text1: str, text2: str) -> float:
-        """두 텍스트 간 유사도 계산 (0.0 ~ 1.0)"""
-        if not text1 and not text2:
-            return 1.0
-        if not text1 or not text2:
-            return 0.0
-        return difflib.SequenceMatcher(None, text1.strip(), text2.strip()).ratio()
-
-    def _process_page(
-        self,
-        doc: fitz.Document,
-        page_num: int,
-        doc_id: str,
-    ) -> PageResult:
-        """
-        단일 페이지 처리 (하이브리드 v2.1 - 비교 로직 포함)
-
-        로직:
-        1. 내장 텍스트 추출 + 품질 계산
-        2. OCR 실행 + 품질 계산
-        3. 두 결과 유사도 비교
-        4. 품질 비교 후 더 나은 소스 선택
-        5. 비교 결과 기록
-        """
-        page = doc[page_num]
-
-        # 1. 내장 텍스트 추출
-        try:
-            embedded_text = page.get_text("text")
-        except Exception as e:
-            embedded_text = ""
-            logger.warning(f"텍스트 추출 실패: {doc_id} p.{page_num} - {e}")
-
-        # 2. 내장 텍스트 품질 계산
-        embedded_quality = self.quality_scorer.score_text(embedded_text)
-
-        # 3. 빈 페이지 처리 (텍스트 거의 없음)
-        if embedded_quality.strategy == ProcessingStrategy.SKIP:
-            return PageResult(
-                page_num=page_num,
-                status=PageStatus.COMPLETED,
-                strategy=ProcessingStrategy.SKIP,
-                quality_score=0.0,
-                text="",
-                text_source="skip",
-                embedded_quality=0.0,
-                ocr_quality=0.0,
-                similarity=1.0,
-                processed_at=datetime.now().isoformat(),
-            )
-
-        # 4. OCR 실행
-        ocr_text, ocr_quality_score, ocr_engine, ocr_confidence = self._run_ocr(doc, page_num, doc_id)
-
-        # 5. 유사도 계산
-        similarity = self._calculate_similarity(embedded_text, ocr_text)
-
-        # 6. 소스 결정 로직
-        # - 유사도 > 90%: 내장 텍스트 사용 (OCR 불필요)
-        # - 유사도 70-90%: 품질 점수 비교
-        # - 유사도 < 70%: 수동 검토 플래그
-
-        SIMILARITY_HIGH = 0.90
-        SIMILARITY_LOW = 0.70
-
-        if similarity >= SIMILARITY_HIGH:
-            # 유사도 높음 → 내장 텍스트 사용 (더 빠름)
-            final_text = embedded_text
-            text_source = "embedded"
-            final_quality = embedded_quality.score
-            strategy = ProcessingStrategy.TEXT
-            status = PageStatus.COMPLETED
-            logger.debug(f"TEXT 선택 (유사도 {similarity:.1%}): {doc_id} p.{page_num}")
-        elif similarity >= SIMILARITY_LOW:
-            # 중간 유사도 → 품질 비교 후 선택
-            if embedded_quality.score >= ocr_quality_score:
-                final_text = embedded_text
-                text_source = "embedded"
-                final_quality = embedded_quality.score
-                strategy = ProcessingStrategy.TEXT
-            else:
-                final_text = ocr_text
-                text_source = "ocr"
-                final_quality = ocr_quality_score
-                strategy = ProcessingStrategy.OCR
-            status = PageStatus.COMPLETED
-            logger.debug(f"{text_source.upper()} 선택 (품질비교): {doc_id} p.{page_num}")
-        else:
-            # 유사도 낮음 → 수동 검토 필요 (일단 OCR 사용)
-            final_text = ocr_text if ocr_quality_score > embedded_quality.score else embedded_text
-            text_source = "ocr" if ocr_quality_score > embedded_quality.score else "embedded"
-            final_quality = max(ocr_quality_score, embedded_quality.score)
-            strategy = ProcessingStrategy.HYBRID
-            status = PageStatus.MANUAL_REVIEW
-            logger.warning(f"수동검토 필요 (유사도 {similarity:.1%}): {doc_id} p.{page_num}")
-
-            # 수동 검토 파일 저장
-            manual_path = self.output_dir / "manual_review" / f"{doc_id}_p{page_num}.json"
-            with open(manual_path, 'w', encoding='utf-8') as f:
-                json.dump({
-                    "doc_id": doc_id,
-                    "page_num": page_num,
-                    "embedded_text": embedded_text[:1000],
-                    "embedded_quality": embedded_quality.score,
-                    "ocr_text": ocr_text[:1000],
-                    "ocr_quality": ocr_quality_score,
-                    "similarity": similarity,
-                    "reason": f"유사도 낮음: {similarity:.1%}",
-                    "selected_source": text_source,
-                }, f, ensure_ascii=False, indent=2)
-
-        return PageResult(
-            page_num=page_num,
-            status=status,
-            strategy=strategy,
-            quality_score=final_quality,
-            text=final_text,
-            ocr_engine=ocr_engine,
-            ocr_confidence=ocr_confidence,
-            text_source=text_source,
-            embedded_quality=embedded_quality.score,
-            ocr_quality=ocr_quality_score,
-            similarity=similarity,
-            processed_at=datetime.now().isoformat(),
-        )
-
-    def _run_ocr(self, doc: fitz.Document, page_num: int, doc_id: str) -> tuple:
-        """OCR 실행 및 품질 계산 (분리된 메서드)"""
-        page = doc[page_num]
-
-        try:
-            pix = page.get_pixmap(dpi=300)
-            img_data = pix.tobytes("png")
-
-            from PIL import Image
-            import io
-            img = Image.open(io.BytesIO(img_data))
-
-            ocr_result = self.ocr_engine.process_image(img)
-            ocr_text = (ocr_result.text or "").strip()
-            ocr_quality = self.quality_scorer.score_text(ocr_text)
-
-            return (
-                ocr_text,
-                ocr_quality.score,
-                ocr_result.engine.value if ocr_result.engine else "unknown",
-                ocr_result.confidence
-            )
-        except Exception as e:
-            logger.error(f"OCR 실패: {doc_id} p.{page_num} - {e}")
-            return ("", 0.0, "error", 0.0)
-
-    def _ocr_page(
-        self,
-        doc: fitz.Document,
-        page_num: int,
-        doc_id: str,
-        quality: QualityResult,
-        embedded_text: str,
-    ) -> PageResult:
-        """
-        페이지 OCR 처리 (하이브리드 v2)
-
-        품질 점수가 임계치 미만일 때 호출됨.
-        이미지로 변환 후 OCR 실행, 결과를 그대로 사용.
-        """
-        page = doc[page_num]
-
-        # 1. 페이지를 이미지로 변환
-        try:
-            pix = page.get_pixmap(dpi=300)
-            img_data = pix.tobytes("png")
-
-            from PIL import Image
-            import io
-            img = Image.open(io.BytesIO(img_data))
-
-        except Exception as e:
-            logger.error(f"이미지 변환 실패: {doc_id} p.{page_num} - {e}")
-            # 이미지 변환 실패시 내장 텍스트라도 사용 (fallback)
-            return PageResult(
-                page_num=page_num,
-                status=PageStatus.COMPLETED,
-                strategy=ProcessingStrategy.TEXT,
-                quality_score=quality.score,
-                text=embedded_text,
-                ocr_engine="fallback_embedded",
-                error_message=f"이미지 변환 실패, 내장 텍스트 사용: {e}",
-                processed_at=datetime.now().isoformat(),
-            )
-
-        # 2. OCR 실행
-        ocr_result = self.ocr_engine.process_image(img)
-        ocr_text = (ocr_result.text or "").strip()
-
-        # 3. OCR 결과 품질 확인
-        ocr_quality = self.quality_scorer.score_text(ocr_text)
-
-        # 4. 빈 페이지 감지 (내장 텍스트도 없고 OCR도 빈약)
-        MIN_OCR_TEXT_LENGTH = 5
-        if not embedded_text.strip() and len(ocr_text) < MIN_OCR_TEXT_LENGTH:
-            logger.debug(f"빈 페이지 감지: {doc_id} p.{page_num}")
-            return PageResult(
-                page_num=page_num,
-                status=PageStatus.COMPLETED,
-                strategy=ProcessingStrategy.SKIP,
-                quality_score=0.0,
-                text="",
-                processed_at=datetime.now().isoformat(),
-            )
-
-        # 5. OCR 결과 vs 내장 텍스트 비교 (안전장치)
-        # OCR이 확실히 나쁘면 (거의 빈 결과) 내장 텍스트 사용
-        if len(ocr_text) < MIN_OCR_TEXT_LENGTH and len(embedded_text.strip()) > 50:
-            logger.warning(f"OCR 실패, 내장 텍스트 사용: {doc_id} p.{page_num}")
-            return PageResult(
-                page_num=page_num,
-                status=PageStatus.COMPLETED,
-                strategy=ProcessingStrategy.TEXT,
-                quality_score=quality.score,
-                text=embedded_text,
-                ocr_engine="fallback_embedded",
-                processed_at=datetime.now().isoformat(),
-            )
-
-        # 6. OCR 결과 사용 (기본)
-        final_text = ocr_text
-        engine_used = ocr_result.engine.value if ocr_result.engine else "unknown"
-
-        # 7. OCR 품질도 낮으면 MANUAL_REVIEW
-        if ocr_result.engine == OCREngine.MANUAL or ocr_quality.score < 0.5:
-            manual_path = self.output_dir / "manual_review" / f"{doc_id}_p{page_num}.json"
-            with open(manual_path, 'w', encoding='utf-8') as f:
-                json.dump({
-                    "doc_id": doc_id,
-                    "page_num": page_num,
-                    "embedded_text": embedded_text[:500],
-                    "embedded_quality": quality.score,
-                    "ocr_text": ocr_text[:500],
-                    "ocr_quality": ocr_quality.score,
-                    "ocr_confidence": ocr_result.confidence,
-                    "reason": "OCR 품질도 낮음" if ocr_quality.score < 0.5 else "OCR 엔진 MANUAL",
-                }, f, ensure_ascii=False, indent=2)
-
-            return PageResult(
-                page_num=page_num,
-                status=PageStatus.MANUAL_REVIEW,
-                strategy=ProcessingStrategy.OCR,
-                quality_score=ocr_quality.score,
-                text=final_text,
-                ocr_engine=engine_used,
-                ocr_confidence=ocr_result.confidence,
-                processed_at=datetime.now().isoformat(),
-            )
-
-        # 8. 정상 완료
-        logger.debug(f"OCR 완료: {doc_id} p.{page_num} (품질: {ocr_quality.score:.3f})")
-        return PageResult(
-            page_num=page_num,
-            status=PageStatus.COMPLETED,
-            strategy=ProcessingStrategy.OCR,
-            quality_score=ocr_quality.score,
-            text=final_text,
-            ocr_engine=engine_used,
-            ocr_confidence=ocr_result.confidence,
-            processed_at=datetime.now().isoformat(),
-        )
-
-    def run(self, limit: Optional[int] = None, parallel: bool = True) -> dict:
-        """
-        파이프라인 실행 (v2.2: 병렬 처리 지원)
-
-        Args:
-            limit: 처리할 최대 문서 수 (테스트용)
-            parallel: 병렬 처리 여부 (기본: True)
-
-        Returns:
-            실행 결과 통계
-        """
-        logger.info("=== OCR 파이프라인 시작 (v2.2) ===")
-        logger.info(f"  병렬 처리: {parallel} (워커: {self.num_workers})")
-
-        pdfs = list(self.scan_pdfs())
-        if limit:
-            pdfs = pdfs[:limit]
-
-        logger.info(f"처리 대상: {len(pdfs)}개 PDF")
-
-        results = {
-            "total": len(pdfs),
-            "completed": 0,
-            "partial": 0,
-            "failed": 0,
-            "skipped": 0,
-        }
-
-        if parallel and self.num_workers > 1:
-            # 병렬 처리 (GPU 활용도 향상)
-            results = self._run_parallel(pdfs, results)
-        else:
-            # 순차 처리
-            results = self._run_sequential(pdfs, results)
-
-        # 최종 통계 출력
-        self._print_summary(results)
-
-        return results
-
-    def _run_sequential(self, pdfs: List[Path], results: dict) -> dict:
-        """순차 처리 (기존 방식)"""
-        with Progress() as progress:
-            task = progress.add_task("[green]Processing...", total=len(pdfs))
-
-            for pdf_path in pdfs:
-                result = self.process_document(pdf_path)
-                self._update_results(result, results)
-                progress.update(task, advance=1)
-
-        return results
-
-    def _run_parallel(self, pdfs: List[Path], results: dict) -> dict:
-        """
-        병렬 처리 (GPU 활용도 향상)
-
-        전략: 이미지 프리로딩 + 연속 OCR 처리
-        - I/O 병렬화: ThreadPoolExecutor로 이미지 로딩
-        - GPU 활용: 이미지가 준비되는 대로 연속 처리
-        """
-        from queue import Queue
-        import threading
-
-        # 이미지 큐 (프리로딩용)
-        image_queue = Queue(maxsize=self.num_workers * 2)
-        results_lock = threading.Lock()
-        stop_event = threading.Event()
-
-        def preload_documents():
-            """PDF → 이미지 변환 (백그라운드)"""
-            for pdf_path in pdfs:
-                if stop_event.is_set():
-                    break
-                try:
-                    doc_id = self._generate_doc_id(pdf_path)
-
-                    # 이미 완료된 문서 스킵
-                    existing_status = self.checkpoint.get_document_status(doc_id)
-                    if existing_status == DocumentStatus.COMPLETED.value:
-                        image_queue.put((pdf_path, doc_id, None, "skip"))
-                        continue
-
-                    # PDF 열기 및 이미지 변환
-                    doc = fitz.open(pdf_path)
-                    pages_data = []
-
-                    for page_num in range(len(doc)):
-                        page = doc[page_num]
-                        embedded_text = page.get_text("text")
-
-                        # 이미지 변환
-                        pix = page.get_pixmap(dpi=300)
-                        img_data = pix.tobytes("png")
-
-                        from PIL import Image
-                        img = Image.open(io.BytesIO(img_data))
-                        img_array = np.array(img)
-
-                        pages_data.append({
-                            "page_num": page_num,
-                            "embedded_text": embedded_text,
-                            "image": img_array,
-                        })
-
-                    doc.close()
-                    image_queue.put((pdf_path, doc_id, pages_data, "ready"))
-
-                except Exception as e:
-                    logger.error(f"프리로딩 실패: {pdf_path} - {e}")
-                    image_queue.put((pdf_path, None, None, "error"))
-
-            # 종료 신호
-            image_queue.put((None, None, None, "done"))
-
-        # 프리로딩 스레드 시작
-        preload_thread = threading.Thread(target=preload_documents)
-        preload_thread.start()
-
-        with Progress() as progress:
-            task = progress.add_task("[green]Processing (prefetch)...", total=len(pdfs))
-
-            while True:
-                item = image_queue.get()
-                pdf_path, doc_id, pages_data, status = item
-
-                if status == "done":
-                    break
-
-                if status == "skip":
-                    with results_lock:
-                        results["skipped"] += 1
-                    progress.update(task, advance=1)
-                    continue
-
-                if status == "error":
-                    with results_lock:
-                        results["failed"] += 1
-                    progress.update(task, advance=1)
-                    continue
-
-                # OCR 처리 (GPU)
-                try:
-                    result = self._process_preloaded_document(pdf_path, doc_id, pages_data)
-                    with results_lock:
-                        self._update_results(result, results)
-                except Exception as e:
-                    logger.error(f"처리 실패: {pdf_path} - {e}")
-                    with results_lock:
-                        results["failed"] += 1
-
-                progress.update(task, advance=1)
-
-        stop_event.set()
-        preload_thread.join()
-
-        return results
-
-    def _process_preloaded_document(
-        self,
-        pdf_path: Path,
-        doc_id: str,
-        pages_data: List[dict],
-    ) -> DocumentResult:
-        """프리로딩된 문서 처리 (OCR만 수행)"""
-
-        result = DocumentResult(
-            doc_id=doc_id,
-            pdf_path=str(pdf_path),
-            status=DocumentStatus.PROCESSING,
-            total_pages=len(pages_data),
-            tier=self.get_document_tier(pdf_path),
-            started_at=datetime.now().isoformat(),
-        )
-        self.checkpoint.save_document(result)
-
-        all_text = []
-        manual_review_pages = []
-
-        for page_data in pages_data:
-            page_num = page_data["page_num"]
-            embedded_text = page_data["embedded_text"]
-            img_array = page_data["image"]
-
-            # 페이지 처리
-            page_result = self._process_preloaded_page(
-                doc_id, page_num, embedded_text, img_array
-            )
-            page_result.retry_count = 1
-
-            result.pages.append(page_result)
-            self.checkpoint.save_page(doc_id, page_result)
-
-            if page_result.status == PageStatus.COMPLETED:
-                all_text.append(page_result.text)
-            elif page_result.status == PageStatus.MANUAL_REVIEW:
-                manual_review_pages.append(page_num)
-                all_text.append(page_result.text)
-
-        # 문서 완료 상태 결정
-        completed = sum(1 for p in result.pages if p.status == PageStatus.COMPLETED)
-        manual_review = sum(1 for p in result.pages if p.status == PageStatus.MANUAL_REVIEW)
-        failed = sum(1 for p in result.pages if p.status == PageStatus.FAILED)
-
-        if failed == 0 and manual_review == 0:
-            result.status = DocumentStatus.COMPLETED
-        elif failed == 0 and manual_review > 0:
-            result.status = DocumentStatus.PARTIAL
-        elif completed > 0 or manual_review > 0:
-            result.status = DocumentStatus.PARTIAL
-        else:
-            result.status = DocumentStatus.FAILED
-
-        result.manual_review_pages = manual_review_pages
-        result.completed_at = datetime.now().isoformat()
-        self.checkpoint.save_document(result)
-
-        # 텍스트 저장
-        if all_text:
-            text_path = self.output_dir / "text" / f"{doc_id}.txt"
-            with open(text_path, 'w', encoding='utf-8') as f:
-                f.write("\n\n--- PAGE BREAK ---\n\n".join(all_text))
-
-        logger.info(f"문서 처리 완료: {doc_id} - {result.status.value}")
-        return result
-
-    def _process_preloaded_page(
-        self,
-        doc_id: str,
-        page_num: int,
-        embedded_text: str,
-        img_array: np.ndarray,
-    ) -> PageResult:
-        """프리로딩된 페이지 처리 (비교 로직 포함)"""
-
-        # 내장 텍스트 품질
-        embedded_quality = self.quality_scorer.score_text(embedded_text)
-
-        # 빈 페이지 처리
-        if embedded_quality.strategy == ProcessingStrategy.SKIP:
-            return PageResult(
-                page_num=page_num,
-                status=PageStatus.COMPLETED,
-                strategy=ProcessingStrategy.SKIP,
-                quality_score=0.0,
-                text="",
-                text_source="skip",
-                embedded_quality=0.0,
-                ocr_quality=0.0,
-                similarity=1.0,
-                processed_at=datetime.now().isoformat(),
-            )
-
-        # OCR 실행 (GPU)
-        ocr_result = self.ocr_engine.process_image(img_array)
-        ocr_text = (ocr_result.text or "").strip()
-        ocr_quality = self.quality_scorer.score_text(ocr_text)
-
-        # 유사도 계산
-        similarity = self._calculate_similarity(embedded_text, ocr_text)
-
-        # 소스 결정
-        SIMILARITY_HIGH = 0.90
-        SIMILARITY_LOW = 0.70
-
-        if similarity >= SIMILARITY_HIGH:
-            final_text = embedded_text
-            text_source = "embedded"
-            final_quality = embedded_quality.score
-            strategy = ProcessingStrategy.TEXT
-            status = PageStatus.COMPLETED
-        elif similarity >= SIMILARITY_LOW:
-            if embedded_quality.score >= ocr_quality.score:
-                final_text = embedded_text
-                text_source = "embedded"
-                final_quality = embedded_quality.score
-                strategy = ProcessingStrategy.TEXT
-            else:
-                final_text = ocr_text
-                text_source = "ocr"
-                final_quality = ocr_quality.score
-                strategy = ProcessingStrategy.OCR
-            status = PageStatus.COMPLETED
-        else:
-            final_text = ocr_text if ocr_quality.score > embedded_quality.score else embedded_text
-            text_source = "ocr" if ocr_quality.score > embedded_quality.score else "embedded"
-            final_quality = max(ocr_quality.score, embedded_quality.score)
-            strategy = ProcessingStrategy.HYBRID
-            status = PageStatus.MANUAL_REVIEW
-            logger.warning(f"수동검토 필요 (유사도 {similarity:.1%}): {doc_id} p.{page_num}")
-
-        return PageResult(
-            page_num=page_num,
-            status=status,
-            strategy=strategy,
-            quality_score=final_quality,
-            text=final_text,
-            ocr_engine=ocr_result.engine.value if ocr_result.engine else "unknown",
-            ocr_confidence=ocr_result.confidence,
-            text_source=text_source,
-            embedded_quality=embedded_quality.score,
-            ocr_quality=ocr_quality.score,
-            similarity=similarity,
-            processed_at=datetime.now().isoformat(),
-        )
-
-    def _update_results(self, result: Optional[DocumentResult], results: dict):
-        """결과 통계 업데이트"""
-        if result is None:
-            results["skipped"] += 1
-        elif result.status == DocumentStatus.COMPLETED:
-            results["completed"] += 1
-        elif result.status == DocumentStatus.PARTIAL:
-            results["partial"] += 1
-        else:
-            results["failed"] += 1
-
-    def _print_summary(self, results: dict):
-        """결과 요약 출력"""
-        table = Table(title="OCR 파이프라인 결과")
-        table.add_column("항목", style="cyan")
-        table.add_column("수량", justify="right", style="green")
-
-        table.add_row("총 문서", str(results["total"]))
-        table.add_row("완료", str(results["completed"]))
-        table.add_row("부분 완료", str(results["partial"]))
-        table.add_row("실패", str(results["failed"]))
-        table.add_row("스킵 (기완료)", str(results["skipped"]))
-
-        console.print(table)
-
-        # 체크포인트 통계
-        stats = self.checkpoint.get_stats()
-        console.print(f"\n체크포인트 통계: {stats}")
-
-
-# CLI
 if __name__ == "__main__":
-    import click
-
-    @click.group()
-    def cli():
-        """OCR 파이프라인 CLI"""
-        pass
-
-    @cli.command()
-    @click.option('--input', '-i', required=True, help='PDF 입력 디렉토리')
-    @click.option('--output', '-o', required=True, help='결과 출력 디렉토리')
-    @click.option('--gpu/--no-gpu', default=True, help='GPU 사용 여부')
-    @click.option('--limit', '-l', default=None, type=int, help='처리할 최대 문서 수')
-    @click.option('--workers', '-w', default=4, type=int, help='병렬 워커 수 (GPU 활용도)')
-    @click.option('--sequential', '-s', is_flag=True, help='순차 처리 (병렬 비활성화)')
-    def run(input, output, gpu, limit, workers, sequential):
-        """파이프라인 실행 (v2.2: 병렬 처리)"""
-        pipeline = OCRPipeline(
-            input_dir=input,
-            output_dir=output,
-            use_gpu=gpu,
-            num_workers=workers,
-        )
-        pipeline.run(limit=limit, parallel=not sequential)
-
-    @cli.command()
-    @click.option('--checkpoint', '-c', required=True, help='체크포인트 디렉토리')
-    def stats(checkpoint):
-        """통계 조회"""
-        cm = CheckpointManager(checkpoint)
-        stats = cm.get_stats()
-        console.print(stats)
-
-    cli()
+    main()
